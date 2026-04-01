@@ -1,7 +1,7 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/Button';
-import { apiFetch } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
   { to: '/blog', label: 'Blog' },
@@ -9,12 +9,7 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await apiFetch('/auth/logout', { method: 'POST' });
-    navigate('/login');
-  };
+  const { logout } = useAuth();
 
   return (
     <aside className="w-56 flex-shrink-0 bg-[var(--bg-secondary)] border-r border-[var(--border)] flex flex-col">
@@ -40,7 +35,7 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="p-3 border-t border-[var(--border)]">
-        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleLogout}>
+        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => logout().catch(() => {})}>
           Logout
         </Button>
       </div>

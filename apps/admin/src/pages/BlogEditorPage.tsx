@@ -118,14 +118,14 @@ export function BlogEditorPage() {
             variant="outline"
             size="sm"
             loading={saveMutation.isPending}
-            onClick={() => { setPost((p) => ({ ...p, status: 'DRAFT' })); saveMutation.mutate({ ...post, status: 'DRAFT' }); }}
+            onClick={() => saveMutation.mutate({ ...post, status: 'DRAFT' })}
           >
             Save Draft
           </Button>
           <Button
             size="sm"
             loading={saveMutation.isPending}
-            onClick={() => { setPost((p) => ({ ...p, status: 'PUBLISHED' })); saveMutation.mutate({ ...post, status: 'PUBLISHED' }); }}
+            onClick={() => saveMutation.mutate({ ...post, status: 'PUBLISHED' })}
           >
             Publish
           </Button>
