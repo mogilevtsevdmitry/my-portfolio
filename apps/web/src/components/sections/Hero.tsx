@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import { GlowText } from '@/components/ui/GlowText';
 import { Button } from '@/components/ui/Button';
