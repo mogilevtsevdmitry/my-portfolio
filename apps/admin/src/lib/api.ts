@@ -10,21 +10,24 @@ async function doRefresh(): Promise<void> {
   if (!res.ok) throw new Error('Refresh failed');
 }
 
-export async function apiFetch(
-  path: string,
-  options?: RequestInit & { _isRetry?: boolean },
-): Promise<Response> {
-  const { _isRetry, ...fetchOptions } = options ?? {};
+export async function apiFetch(path: string, options?: RequestInit): Promise<Response> {
+  return _apiFetch(path, options, false);
+}
 
+async function _apiFetch(
+  path: string,
+  options: RequestInit | undefined,
+  isRetry: boolean,
+): Promise<Response> {
   const res = await fetch(`${API_URL}${path}`, {
-    ...fetchOptions,
+    ...options,
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...fetchOptions.headers },
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
   });
 
   if (res.status === 401) {
     // Auth endpoints skip refresh to prevent infinite loops — throw immediately
-    if (_isRetry || path.startsWith('/auth/')) {
+    if (isRetry || path.startsWith('/auth/')) {
       throw new Error('Unauthorized');
     }
 
@@ -33,7 +36,7 @@ export async function apiFetch(
     }
     try {
       await refreshPromise;
-      return apiFetch(path, { ...options, _isRetry: true });
+      return _apiFetch(path, options, true);
     } catch {
       window.location.href = '/login';
       throw new Error('Session expired');

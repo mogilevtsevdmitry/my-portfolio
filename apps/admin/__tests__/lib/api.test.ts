@@ -4,16 +4,15 @@ import { apiFetch } from '@/lib/api';
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-// Mock window.location.href setter
-const locationSpy = vi.spyOn(window, 'location', 'get').mockReturnValue({
-  ...window.location,
-  href: '',
-} as Location);
-
 describe('apiFetch', () => {
   beforeEach(() => {
     mockFetch.mockReset();
   });
+
+  // Note on module-level state: `refreshPromise` is a module-level variable in api.ts.
+  // In practice this does not leak between tests because the mocked fetch resolves
+  // synchronously (Promises resolve in the same microtask queue), so `refreshPromise`
+  // is always back to `null` before the next test's `beforeEach` runs.
 
   it('sends request with credentials:include', async () => {
     mockFetch.mockResolvedValue({ ok: true, status: 200 });
@@ -51,6 +50,18 @@ describe('apiFetch', () => {
 
     await expect(apiFetch('/admin/blog')).rejects.toThrow();
     expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('on 401 + failed refresh: redirects window to /login', async () => {
+    const mockLocation = { href: '' } as Location;
+    vi.spyOn(window, 'location', 'get').mockReturnValue(mockLocation);
+
+    mockFetch
+      .mockResolvedValueOnce({ ok: false, status: 401 })
+      .mockResolvedValueOnce({ ok: false, status: 401 });
+
+    await apiFetch('/admin/blog').catch(() => {});
+    expect(mockLocation.href).toBe('/login');
   });
 
   it('does not retry refresh endpoint on 401 (prevents loop)', async () => {
