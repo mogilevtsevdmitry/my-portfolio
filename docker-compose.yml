@@ -75,13 +75,23 @@ services:
     networks:
       - portfolio
 
-  # web and admin services will be added in Plans 2 and 3
-  # web:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/web/Dockerfile
-  #   ...
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:3001}
+      NEXT_PUBLIC_UMAMI_ID: ${NEXT_PUBLIC_UMAMI_ID:-}
+      REVALIDATION_SECRET: ${REVALIDATION_SECRET}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dmitry.dev}
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    networks:
+      - portfolio
 
+  # admin service will be added in Plan 3
   # admin:
   #   build:
   #     context: .
