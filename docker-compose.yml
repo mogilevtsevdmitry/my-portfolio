@@ -91,12 +91,16 @@ services:
     networks:
       - portfolio
 
-  # admin service will be added in Plan 3
-  # admin:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/admin/Dockerfile
-  #   ...
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    ports:
+      - "3002:80"
+    depends_on:
+      - api
+    networks:
+      - portfolio
 
 volumes:
   postgres_data:
