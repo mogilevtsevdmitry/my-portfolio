@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0B1F1A;
+  --bg-secondary: #0F2A24;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --accent: #4ADE80;
+  --accent-glow: rgba(74, 222, 128, 0.15);
+  --text-primary: #F0FDF4;
+  --text-muted: #86EFAC;
+  --border: rgba(74, 222, 128, 0.12);
+  --border-hover: rgba(74, 222, 128, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+  }
+  .input-base {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .input-base:focus {
+    border-color: var(--border-hover);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .input-base::placeholder {
+    color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+  }
+}
