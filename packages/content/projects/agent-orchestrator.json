@@ -1,0 +1,23 @@
+{
+  "slug": "agent-orchestrator",
+  "previewImage": "/projects/agent-orchestrator.png",
+  "technologies": ["NestJS", "PostgreSQL", "Redis", "OpenAI", "Docker"],
+  "ru": {
+    "title": "Agent Orchestrator",
+    "shortDescription": "Платформа для управления и оркестрации AI-агентов в бизнес-процессах",
+    "description": "Система оркестрации AI-агентов для автоматизации бизнес-процессов. Поддерживает создание, настройку и мониторинг агентов с разными ролями.",
+    "problem": "Компании хотят автоматизировать процессы с помощью AI, но не имеют единой платформы для управления агентами, их задачами и результатами.",
+    "solution": "Построил event-driven оркестратор на NestJS с очередями задач (BullMQ), персистентным состоянием агентов в PostgreSQL и real-time мониторингом через WebSocket.",
+    "result": "Автоматизировано 15+ повторяющихся бизнес-процессов. Время выполнения рутинных задач сократилось с 4 часов до 5 минут.",
+    "aiUsage": "LLM-агенты с контекстной памятью, инструментами (tool use) и возможностью делегирования задач между агентами."
+  },
+  "en": {
+    "title": "Agent Orchestrator",
+    "shortDescription": "Platform for managing and orchestrating AI agents in business processes",
+    "description": "AI agent orchestration system for business process automation. Supports creating, configuring, and monitoring agents with different roles.",
+    "problem": "Companies want to automate processes with AI but lack a unified platform for managing agents, their tasks, and results.",
+    "solution": "Built an event-driven orchestrator on NestJS with task queues (BullMQ), persistent agent state in PostgreSQL, and real-time monitoring via WebSocket.",
+    "result": "Automated 15+ repetitive business processes. Routine task execution time reduced from 4 hours to 5 minutes.",
+    "aiUsage": "LLM agents with contextual memory, tool use, and ability to delegate tasks between agents."
+  }
+}

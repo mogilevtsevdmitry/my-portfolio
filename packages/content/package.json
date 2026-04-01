@@ -1,0 +1,11 @@
+{
+  "name": "@portfolio/content",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/types.ts",
+  "types": "./src/types.ts",
+  "exports": {
+    "./projects/*": "./projects/*",
+    "./src/*": "./src/*"
+  }
+}

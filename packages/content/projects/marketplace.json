@@ -1,0 +1,23 @@
+{
+  "slug": "marketplace",
+  "previewImage": "/projects/marketplace.png",
+  "technologies": ["NestJS", "Next.js", "PostgreSQL", "Prisma", "Stripe"],
+  "ru": {
+    "title": "Marketplace AI-агентов",
+    "shortDescription": "Маркетплейс для покупки и продажи готовых AI-агентов и автоматизаций",
+    "description": "Платформа для монетизации AI-агентов: разработчики публикуют агентов, бизнес подключает нужные автоматизации без разработки с нуля.",
+    "problem": "Разработчики AI-агентов не имеют канала монетизации, а бизнес тратит месяцы на разработку того, что уже существует.",
+    "solution": "Multi-tenant SaaS с разделением ролей (seller/buyer), системой оплаты через Stripe Connect, API-ключами для интеграции и витриной агентов.",
+    "result": "Запущено в продакшн с 30+ агентами. Средний time-to-value для нового клиента — 1 день вместо 3 месяцев разработки.",
+    "aiUsage": "Встроенный тестировщик агентов, автоматическая генерация документации через LLM, интеллектуальный поиск по описанию задачи."
+  },
+  "en": {
+    "title": "AI Agent Marketplace",
+    "shortDescription": "Marketplace for buying and selling ready-made AI agents and automations",
+    "description": "Platform for monetizing AI agents: developers publish agents, businesses connect needed automations without building from scratch.",
+    "problem": "AI agent developers lack a monetization channel, while businesses spend months building what already exists.",
+    "solution": "Multi-tenant SaaS with role separation (seller/buyer), Stripe Connect payments, API keys for integration, and an agent showcase.",
+    "result": "Launched to production with 30+ agents. Average time-to-value for a new client is 1 day instead of 3 months of development.",
+    "aiUsage": "Built-in agent tester, automatic documentation generation via LLM, intelligent search by task description."
+  }
+}

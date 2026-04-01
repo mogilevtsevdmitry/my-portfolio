@@ -1,0 +1,23 @@
+{
+  "slug": "telegram-bots",
+  "previewImage": "/projects/telegram-bots.png",
+  "technologies": ["NestJS", "Telegraf", "PostgreSQL", "OpenAI", "Redis"],
+  "ru": {
+    "title": "Telegram AI-боты",
+    "shortDescription": "Серия умных Telegram-ботов для автоматизации бизнес-задач",
+    "description": "Разработка кастомных Telegram-ботов с AI-возможностями: от обработки заявок до полноценных AI-ассистентов с памятью и инструментами.",
+    "problem": "Бизнес хочет автоматизировать коммуникации и обработку запросов в Telegram без найма дополнительного персонала.",
+    "solution": "Модульная платформа на NestJS + Telegraf с поддержкой сценариев, базой знаний, интеграцией с CRM и AI-обработкой естественного языка.",
+    "result": "Снижение нагрузки на поддержку на 70%. Боты обрабатывают 500+ сообщений в день без участия человека.",
+    "aiUsage": "GPT-4 для понимания намерений, RAG на базе знаний компании, мультиагентные сценарии для сложных запросов."
+  },
+  "en": {
+    "title": "Telegram AI Bots",
+    "shortDescription": "A series of smart Telegram bots for automating business tasks",
+    "description": "Development of custom Telegram bots with AI capabilities: from processing requests to full-featured AI assistants with memory and tools.",
+    "problem": "Businesses want to automate communications and request processing in Telegram without hiring additional staff.",
+    "solution": "Modular platform on NestJS + Telegraf with scenario support, knowledge base, CRM integration, and AI natural language processing.",
+    "result": "Support workload reduced by 70%. Bots handle 500+ messages per day without human involvement.",
+    "aiUsage": "GPT-4 for intent understanding, RAG on company knowledge base, multi-agent scenarios for complex requests."
+  }
+}

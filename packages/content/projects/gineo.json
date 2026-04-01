@@ -1,0 +1,24 @@
+{
+  "slug": "gineo",
+  "previewImage": "/projects/gineo.png",
+  "link": "https://gineo.app",
+  "technologies": ["Next.js", "NestJS", "PostgreSQL", "Prisma", "D3.js"],
+  "ru": {
+    "title": "Gineo — Семейное дерево",
+    "shortDescription": "Приложение для создания и исследования интерактивных семейных деревьев",
+    "description": "Веб-приложение для построения семейных деревьев с интерактивной визуализацией, совместным редактированием и хранением истории семьи.",
+    "problem": "Люди хотят сохранять и передавать семейную историю, но существующие инструменты сложны и не дают красивой визуализации.",
+    "solution": "Fullstack приложение с интерактивным D3.js-деревом, multi-tenant архитектурой для семей, real-time коллаборацией и экспортом в PDF.",
+    "result": "500+ активных семей. Средняя сессия 12 минут, NPS 72.",
+    "aiUsage": "AI-помощник для обработки старых фотографий (восстановление, подписи), автоматическое предложение связей на основе введённых данных."
+  },
+  "en": {
+    "title": "Gineo — Family Tree",
+    "shortDescription": "App for creating and exploring interactive family trees",
+    "description": "Web application for building family trees with interactive visualization, collaborative editing, and family history storage.",
+    "problem": "People want to preserve and pass on family history, but existing tools are complex and don't provide beautiful visualization.",
+    "solution": "Fullstack app with interactive D3.js tree, multi-tenant architecture for families, real-time collaboration, and PDF export.",
+    "result": "500+ active families. Average session 12 minutes, NPS 72.",
+    "aiUsage": "AI assistant for processing old photos (restoration, captions), automatic relationship suggestions based on entered data."
+  }
+}
