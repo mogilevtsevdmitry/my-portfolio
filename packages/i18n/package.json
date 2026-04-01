@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "exports": {
-    "./locales/*": "./locales/*"
+    "./locales/*": "./locales/*",
+    "./locales/ru": "./locales/ru/index.ts",
+    "./locales/en": "./locales/en/index.ts"
   }
 }

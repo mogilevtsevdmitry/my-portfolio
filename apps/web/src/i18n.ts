@@ -5,19 +5,15 @@ export const locales = ['ru', 'en'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'ru';
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = (await requestLocale) ?? defaultLocale;
   if (!locales.includes(locale as Locale)) notFound();
 
-  const messages = {
-    common: (await import(`@portfolio/i18n/locales/${locale}/common.json`)).default,
-    hero: (await import(`@portfolio/i18n/locales/${locale}/hero.json`)).default,
-    about: (await import(`@portfolio/i18n/locales/${locale}/about.json`)).default,
-    values: (await import(`@portfolio/i18n/locales/${locale}/values.json`)).default,
-    projects: (await import(`@portfolio/i18n/locales/${locale}/projects.json`)).default,
-    tech: (await import(`@portfolio/i18n/locales/${locale}/tech.json`)).default,
-    process: (await import(`@portfolio/i18n/locales/${locale}/process.json`)).default,
-    contacts: (await import(`@portfolio/i18n/locales/${locale}/contacts.json`)).default,
-  };
+  // Static imports per locale so webpack can analyze them at build time
+  const messages =
+    locale === 'en'
+      ? (await import('@portfolio/i18n/locales/en')).default
+      : (await import('@portfolio/i18n/locales/ru')).default;
 
   return { messages };
 });
