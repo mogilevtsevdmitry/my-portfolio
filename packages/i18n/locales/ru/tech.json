@@ -1,0 +1,10 @@
+{
+  "title": "Технологии",
+  "subtitle": "Стек как инструмент решения задач",
+  "groups": {
+    "backend": "Backend",
+    "architecture": "Архитектура",
+    "infrastructure": "Инфраструктура",
+    "ai": "AI"
+  }
+}

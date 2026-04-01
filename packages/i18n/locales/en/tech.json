@@ -1,0 +1,10 @@
+{
+  "title": "Technologies",
+  "subtitle": "Stack as a problem-solving tool",
+  "groups": {
+    "backend": "Backend",
+    "architecture": "Architecture",
+    "infrastructure": "Infrastructure",
+    "ai": "AI"
+  }
+}

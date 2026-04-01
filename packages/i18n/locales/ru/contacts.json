@@ -1,0 +1,18 @@
+{
+  "title": "Обсудить проект",
+  "subtitle": "Расскажите о задаче, я отвечу в течение 24 часов",
+  "form": {
+    "name": "Имя",
+    "namePlaceholder": "Ваше имя",
+    "contact": "Контакт",
+    "contactPlaceholder": "Email или @telegram",
+    "description": "Описание задачи",
+    "descriptionPlaceholder": "Расскажите подробнее о проекте...",
+    "submit": "Отправить заявку",
+    "success": "Заявка отправлена! Отвечу в течение 24 часов.",
+    "error": "Что-то пошло не так. Попробуйте ещё раз."
+  },
+  "or": "или напишите напрямую",
+  "telegram": "Telegram",
+  "email": "Email"
+}

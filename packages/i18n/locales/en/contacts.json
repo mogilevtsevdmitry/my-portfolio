@@ -1,0 +1,18 @@
+{
+  "title": "Discuss a Project",
+  "subtitle": "Tell me about your task, I'll respond within 24 hours",
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "contact": "Contact",
+    "contactPlaceholder": "Email or @telegram",
+    "description": "Task Description",
+    "descriptionPlaceholder": "Tell me more about the project...",
+    "submit": "Send Request",
+    "success": "Request sent! I'll respond within 24 hours.",
+    "error": "Something went wrong. Please try again."
+  },
+  "or": "or write directly",
+  "telegram": "Telegram",
+  "email": "Email"
+}

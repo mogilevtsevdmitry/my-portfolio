@@ -1,0 +1,33 @@
+{
+  "title": "How I Can Help",
+  "cards": [
+    {
+      "key": "ai",
+      "title": "AI Agents & Automation",
+      "problem": "Manual processes requiring constant team involvement",
+      "solution": "Building AI agents and automated pipelines",
+      "result": "Reduce operational costs by up to 60%"
+    },
+    {
+      "key": "saas",
+      "title": "SaaS & Architecture",
+      "problem": "A monolith that won't scale with growth",
+      "solution": "Designing microservice architecture with DDD",
+      "result": "Systems ready for 10x load increase"
+    },
+    {
+      "key": "devops",
+      "title": "DevOps & Infrastructure",
+      "problem": "Slow releases, unstable deployments",
+      "solution": "Setting up CI/CD, Docker, Kubernetes environments",
+      "result": "Deploy in minutes, not hours"
+    },
+    {
+      "key": "consulting",
+      "title": "Consulting & Audit",
+      "problem": "Unclear bottlenecks and optimization priorities",
+      "solution": "System audit, architectural recommendations",
+      "result": "Clear improvement roadmap with priorities"
+    }
+  ]
+}

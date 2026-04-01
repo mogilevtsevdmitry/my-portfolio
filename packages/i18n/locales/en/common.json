@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "about": "About",
+    "projects": "Projects",
+    "tech": "Tech",
+    "blog": "Blog",
+    "contacts": "Contact"
+  },
+  "buttons": {
+    "discuss": "Discuss Project",
+    "viewCases": "View Cases",
+    "openProject": "Open Project",
+    "details": "Details",
+    "send": "Send",
+    "back": "Back"
+  },
+  "lang": {
+    "ru": "RU",
+    "en": "EN"
+  }
+}

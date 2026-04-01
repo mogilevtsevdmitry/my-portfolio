@@ -1,0 +1,10 @@
+{
+  "title": "Work Process",
+  "steps": [
+    { "number": "01", "title": "Task Analysis", "description": "I dive into the business context and find the real problem behind the request" },
+    { "number": "02", "title": "Architecture Design", "description": "I design the solution architecture and discuss trade-offs" },
+    { "number": "03", "title": "MVP Development", "description": "Quickly build a working prototype to validate hypotheses" },
+    { "number": "04", "title": "Scaling", "description": "Optimize, add reliability and readiness for growth" },
+    { "number": "05", "title": "Support", "description": "Maintain the system, respond to changing requirements" }
+  ]
+}

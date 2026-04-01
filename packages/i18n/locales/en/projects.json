@@ -1,0 +1,14 @@
+{
+  "title": "Projects",
+  "subtitle": "Real cases with measurable results",
+  "openProject": "Open Project",
+  "details": "Details",
+  "sections": {
+    "description": "Description",
+    "problem": "Problem",
+    "solution": "Solution",
+    "result": "Result",
+    "tech": "Technologies",
+    "ai": "AI / Agents"
+  }
+}
