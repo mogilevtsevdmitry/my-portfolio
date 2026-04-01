@@ -1,13 +1,14 @@
-FROM node:20-alpine AS deps
+FROM node:20-alpine AS base
 RUN npm install -g pnpm
+
+FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/admin/package.json ./apps/admin/
 COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install --frozen-lockfile
 
-FROM node:20-alpine AS builder
-RUN npm install -g pnpm
+FROM base AS builder
 WORKDIR /app
 # Copy entire deps stage output (includes root node_modules, apps/admin/node_modules,
 # packages/shared/node_modules and the pnpm virtual store)
