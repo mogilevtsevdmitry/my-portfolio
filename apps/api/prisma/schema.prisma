@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  refreshTokenHash String?
+  createdAt        DateTime @default(now())
+}
+
+model BlogPost {
+  id           String               @id @default(cuid())
+  slug         String               @unique
+  status       PostStatus           @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  translations BlogPostTranslation[]
+}
+
+model BlogPostTranslation {
+  id        String   @id @default(cuid())
+  locale    String
+  title     String
+  excerpt   String
+  content   Json
+  updatedAt DateTime @updatedAt
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  @@unique([postId, locale])
+}
+
+model Contact {
+  id          String        @id @default(cuid())
+  name        String
+  contact     String
+  description String
+  status      ContactStatus @default(NEW)
+  createdAt   DateTime      @default(now())
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  event     String
+  payload   Json?
+  sessionId String?
+  createdAt DateTime @default(now())
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  ARCHIVED
+}
