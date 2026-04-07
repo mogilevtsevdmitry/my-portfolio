@@ -13,6 +13,7 @@ export interface Project {
   previewImage: string; // path relative to /public
   link?: string;
   technologies: string[];
+  category: string; // e.g. "AI", "SaaS", "Backend", "Fullstack", "Telegram Bot"
   ru: ProjectTranslation;
   en: ProjectTranslation;
 }

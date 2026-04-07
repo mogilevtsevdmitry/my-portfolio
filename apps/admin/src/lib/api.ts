@@ -45,3 +45,44 @@ async function _apiFetch(
 
   return res;
 }
+
+export const projectsApi = {
+  list: async (): Promise<any[]> => {
+    const res = await apiFetch('/admin/projects');
+    if (!res.ok) throw new Error('Failed to fetch projects');
+    return res.json();
+  },
+  get: async (id: string): Promise<any> => {
+    const res = await apiFetch(`/admin/projects/${id}`);
+    if (!res.ok) throw new Error('Failed to fetch project');
+    return res.json();
+  },
+  create: async (data: any): Promise<any> => {
+    const res = await apiFetch('/admin/projects', { method: 'POST', body: JSON.stringify(data) });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.message ?? 'Create failed');
+    }
+    return res.json();
+  },
+  update: async (id: string, data: any): Promise<any> => {
+    const res = await apiFetch(`/admin/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.message ?? 'Update failed');
+    }
+    return res.json();
+  },
+  remove: async (id: string): Promise<void> => {
+    const res = await apiFetch(`/admin/projects/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Delete failed');
+  },
+  presign: async (fileName: string, contentType: string): Promise<{ uploadUrl: string; fileUrl: string }> => {
+    const res = await apiFetch('/admin/upload/presign', {
+      method: 'POST',
+      body: JSON.stringify({ fileName, contentType }),
+    });
+    if (!res.ok) throw new Error('Presign failed');
+    return res.json();
+  },
+};

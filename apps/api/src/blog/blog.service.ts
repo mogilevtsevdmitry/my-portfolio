@@ -18,7 +18,9 @@ export class BlogService {
   ) {}
 
   async findPublished(options: FindPublishedOptions = {}) {
-    const { locale = 'ru', page = 1, limit = 10 } = options;
+    const locale = options.locale || 'ru';
+    const limit = Number(options.limit) || 10;
+    const page = Number(options.page) || 1;
     const skip = (page - 1) * limit;
 
     const [data, total] = await Promise.all([
@@ -61,6 +63,7 @@ export class BlogService {
     const post = await this.prisma.blogPost.create({
       data: {
         slug: dto.slug,
+        ...(dto.status ? { status: dto.status as any, publishedAt: dto.status === 'PUBLISHED' ? new Date() : null } : {}),
         translations: {
           create: dto.translations.map((t) => ({
             locale: t.locale,

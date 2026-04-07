@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,6 +5,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-portfolio}
+    ports:
+      - "54321:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -47,64 +47,99 @@ services:
     networks:
       - portfolio
 
-  api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-portfolio}
-      JWT_SECRET: ${JWT_SECRET}
-      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
-      REVALIDATION_SECRET: ${REVALIDATION_SECRET}
-      WEB_URL: http://web:3000
-      ADMIN_URL: http://admin:80
-      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
-      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
-      SMTP_HOST: ${SMTP_HOST:-}
-      SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_USER: ${SMTP_USER:-}
-      SMTP_PASS: ${SMTP_PASS:-}
-      NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL:-}
-      ADMIN_EMAIL: ${ADMIN_EMAIL}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portfolio
+
+  minio-init:
+    image: minio/mc
     depends_on:
-      postgres:
+      minio:
         condition: service_healthy
-    ports:
-      - "3001:3001"
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb --ignore-existing local/portfolio;
+      mc anonymous set download local/portfolio;
+      exit 0;
+      "
     networks:
       - portfolio
 
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:3001}
-      NEXT_PUBLIC_UMAMI_ID: ${NEXT_PUBLIC_UMAMI_ID:-}
-      REVALIDATION_SECRET: ${REVALIDATION_SECRET}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dmitry.dev}
-    depends_on:
-      - api
-    ports:
-      - "3000:3000"
-    networks:
-      - portfolio
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/api/Dockerfile
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-portfolio}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #     REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+  #     REVALIDATION_SECRET: ${REVALIDATION_SECRET}
+  #     WEB_URL: http://web:3000
+  #     ADMIN_URL: http://admin:80
+  #     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+  #     TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+  #     SMTP_HOST: ${SMTP_HOST:-}
+  #     SMTP_PORT: ${SMTP_PORT:-587}
+  #     SMTP_USER: ${SMTP_USER:-}
+  #     SMTP_PASS: ${SMTP_PASS:-}
+  #     NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL:-}
+  #     ADMIN_EMAIL: ${ADMIN_EMAIL}
+  #     ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   ports:
+  #     - "3001:3001"
+  #   networks:
+  #     - portfolio
 
-  admin:
-    build:
-      context: .
-      dockerfile: apps/admin/Dockerfile
-    ports:
-      - "3002:80"
-    depends_on:
-      - api
-    networks:
-      - portfolio
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile
+  #   environment:
+  #     NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:3001}
+  #     NEXT_PUBLIC_UMAMI_ID: ${NEXT_PUBLIC_UMAMI_ID:-}
+  #     REVALIDATION_SECRET: ${REVALIDATION_SECRET}
+  #     NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dmitry.dev}
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - portfolio
+
+  # admin:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/admin/Dockerfile
+  #   ports:
+  #     - "3002:80"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - portfolio
 
 volumes:
   postgres_data:
   postgres_umami_data:
+  minio_data:
 
 networks:
   portfolio:

@@ -15,5 +15,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ? (await import('@portfolio/i18n/locales/en')).default
       : (await import('@portfolio/i18n/locales/ru')).default;
 
-  return { messages };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return { messages: messages as any };
 });

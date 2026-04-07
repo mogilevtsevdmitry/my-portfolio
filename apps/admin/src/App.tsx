@@ -5,6 +5,8 @@ import { LoginPage } from '@/pages/LoginPage';
 import { BlogListPage } from '@/pages/BlogListPage';
 import { BlogEditorPage } from '@/pages/BlogEditorPage';
 import { ContactsPage } from '@/pages/ContactsPage';
+import { ProjectsListPage } from '@/pages/ProjectsListPage';
+import { ProjectEditPage } from '@/pages/ProjectEditPage';
 
 export function App() {
   return (
@@ -17,6 +19,8 @@ export function App() {
           <Route path="/blog/new" element={<BlogEditorPage />} />
           <Route path="/blog/:id" element={<BlogEditorPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/projects" element={<ProjectsListPage />} />
+          <Route path="/projects/:id" element={<ProjectEditPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/blog" replace />} />

@@ -1,41 +1,81 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
-import { Section } from '@/components/ui/Section';
-import { GlowText } from '@/components/ui/GlowText';
-import { Badge } from '@/components/ui/Badge';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const techGroups = {
-  backend: ['NestJS', 'PostgreSQL', 'Prisma', 'Redis', 'GraphQL'],
-  architecture: ['DDD', 'Clean Architecture', 'Event-driven', 'Microservices', 'CQRS'],
-  infrastructure: ['Docker', 'Kubernetes', 'CI/CD', 'Nginx', 'Terraform'],
-  ai: ['LLM', 'Multi-agent systems', 'Orchestration', 'RAG', 'Tool use'],
+  backend:       ['NestJS', 'PostgreSQL', 'Prisma', 'Redis', 'GraphQL'],
+  architecture:  ['DDD', 'Clean Architecture', 'Event-driven', 'Microservices', 'CQRS'],
+  infrastructure:['Docker', 'Kubernetes', 'CI/CD', 'Nginx', 'Terraform'],
+  ai:            ['LLM', 'Multi-agent', 'Orchestration', 'RAG', 'Tool use'],
 } as const;
+
+const groupIcons: Record<string, string> = {
+  backend: '◈', architecture: '◇', infrastructure: '◉', ai: '◎',
+};
 
 export function TechStack() {
   const t = useTranslations('tech');
+  const { ref, isVisible } = useScrollReveal();
 
   return (
-    <Section id="tech" alt>
-      <div className="text-center mb-12">
-        <GlowText as="h2" className="text-3xl md:text-4xl font-bold mb-4">
-          {t('title')}
-        </GlowText>
-        <p className="text-[var(--text-muted)]">{t('subtitle')}</p>
+    <section
+      id="tech"
+      className="relative py-24 md:py-36 px-6 md:px-16 lg:px-24 overflow-hidden"
+      style={{ background: 'var(--bg-secondary)', minHeight: '100vh' }}
+    >
+      {/* Marquee ticker at top */}
+      <div className="overflow-hidden mb-16 opacity-20 select-none" aria-hidden>
+        <div className="ticker-track whitespace-nowrap">
+          {['AI · Backend · SaaS · DevOps · Architecture · DDD · Kubernetes · NestJS · LLM · Microservices · ', 'AI · Backend · SaaS · DevOps · Architecture · DDD · Kubernetes · NestJS · LLM · Microservices · '].map((text, i) => (
+            <span key={i} className="inline-block px-4" style={{ fontFamily: 'var(--font-syne)', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)' }}>
+              {text}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {(Object.keys(techGroups) as Array<keyof typeof techGroups>).map((group) => (
-          <div key={group} className="glass-card p-5">
-            <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-4">
-              {t(`groups.${group}`)}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {techGroups[group].map((tech) => (
-                <Badge key={tech}>{tech}</Badge>
-              ))}
+      <div className="max-w-[1400px] mx-auto">
+        <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
+          <span className="section-eyebrow">04. Технологии</span>
+          <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
+        </div>
+
+        <div className={`reveal ${isVisible ? 'is-visible' : ''} mb-12`} style={{ maxWidth: '560px' }}>
+          <h2
+            className="font-display font-light leading-tight"
+            style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', color: 'var(--text-primary)' }}
+          >
+            {t('title')}
+          </h2>
+          <p className="mt-4 text-sm" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-dm-sans)' }}>
+            {t('subtitle')}
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {(Object.keys(techGroups) as Array<keyof typeof techGroups>).map((group, i) => (
+            <div
+              key={group}
+              className={`reveal reveal-delay-${i + 1} ${isVisible ? 'is-visible' : ''} glass-card p-6`}
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <span style={{ color: 'var(--accent)', fontSize: '1.1rem' }} aria-hidden>{groupIcons[group]}</span>
+                <h3
+                  style={{ fontFamily: 'var(--font-syne)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--accent)' }}
+                >
+                  {t(`groups.${group}`)}
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {techGroups[group].map((tech) => (
+                  <span key={tech} className="tech-badge">{tech}</span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }

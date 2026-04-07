@@ -2,6 +2,7 @@
   "slug": "marketplace",
   "previewImage": "/projects/marketplace.png",
   "technologies": ["NestJS", "Next.js", "PostgreSQL", "Prisma", "Stripe"],
+  "category": "SaaS",
   "ru": {
     "title": "Marketplace AI-агентов",
     "shortDescription": "Маркетплейс для покупки и продажи готовых AI-агентов и автоматизаций",

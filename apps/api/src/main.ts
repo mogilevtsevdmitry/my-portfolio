@@ -20,6 +20,7 @@ async function bootstrap() {
     origin: [
       process.env.WEB_URL ?? 'http://localhost:3000',
       process.env.ADMIN_URL ?? 'http://localhost:3002',
+      'http://localhost:3004',
     ],
     credentials: true,
   });

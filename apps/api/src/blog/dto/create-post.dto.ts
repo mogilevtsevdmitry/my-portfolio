@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { Allow, IsArray, IsString, ValidateNested, IsIn } from 'class-validator';
+import { Allow, IsArray, IsIn, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 class TranslationDto {
   @IsIn(['ru', 'en'])
@@ -18,6 +18,10 @@ class TranslationDto {
 export class CreatePostDto {
   @IsString()
   slug: string;
+
+  @IsOptional()
+  @IsIn(['DRAFT', 'PUBLISHED'])
+  status?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

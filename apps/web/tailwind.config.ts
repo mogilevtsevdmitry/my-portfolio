@@ -9,19 +9,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'bg-primary': '#0B1F1A',
-        'bg-secondary': '#0F2A24',
-        'accent': '#4ADE80',
-        'text-primary': '#F0FDF4',
-        'text-muted': '#86EFAC',
+        'bg-primary':     '#09090A',
+        'bg-secondary':   '#0F0E0B',
+        'accent':         '#C9A84C',
+        'accent-light':   '#E4C87A',
+        'accent-dark':    '#8A6E2F',
+        'text-primary':   '#F5EFE2',
+        'text-muted':     '#7C7060',
+        'text-secondary': '#B5A88A',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'],
-        mono: ['var(--font-jetbrains)', 'monospace'],
+        display: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        ui:      ['var(--font-syne)',      'sans-serif'],
+        sans:    ['var(--font-dm-sans)',   'system-ui', 'sans-serif'],
       },
-      backdropBlur: {
-        xs: '2px',
-      },
+      backdropBlur: { xs: '2px' },
     },
   },
   plugins: [],

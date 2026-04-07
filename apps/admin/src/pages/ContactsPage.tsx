@@ -15,7 +15,7 @@ interface Contact {
 }
 
 async function fetchContacts(): Promise<Contact[]> {
-  const res = await apiFetch('/admin/contacts');
+  const res = await apiFetch('/contacts');
   if (!res.ok) throw new Error('Failed to fetch contacts');
   return res.json();
 }
@@ -41,7 +41,7 @@ export function ContactsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: ContactStatus }) => {
-      const res = await apiFetch(`/admin/contacts/${id}`, {
+      const res = await apiFetch(`/contacts/${id}`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });

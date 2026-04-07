@@ -31,3 +31,23 @@ Thumbs.db
 
 # Prisma
 prisma/migrations/dev.db
+
+# TypeScript build info
+*.tsbuildinfo
+*.d.ts.map
+
+# Compiled seed
+apps/api/prisma/seed.js
+apps/api/prisma/seed.js.map
+apps/api/prisma/seed.d.ts
+
+# Shared package build output
+packages/shared/src/**/*.js
+packages/shared/src/**/*.js.map
+packages/shared/src/**/*.d.ts
+
+# API build info
+apps/api/tsconfig.build.tsbuildinfo
+
+# Next.js env types
+apps/web/next-env.d.ts

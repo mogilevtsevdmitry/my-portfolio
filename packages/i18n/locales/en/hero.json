@@ -1,7 +1,18 @@
 {
   "name": "Dmitry Mogilevtsev",
+  "firstName": "Dmitry",
+  "lastName": "Mogilevtsev",
+  "label": "Developer × Entrepreneur",
+  "specialization": "Specialization",
+  "specializationLine": "AI · Backend · SaaS",
   "title": "AI Systems Architect & Scalable Product Builder",
   "subtitle": "I help businesses automate processes, reduce costs, and grow through AI and systems architecture",
+  "stats": {
+    "experience": "years experience",
+    "projects": "projects",
+    "savings": "cost savings"
+  },
+  "scroll": "scroll",
   "cta": {
     "discuss": "Discuss Project",
     "cases": "View Cases"

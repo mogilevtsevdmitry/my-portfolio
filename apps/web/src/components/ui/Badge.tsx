@@ -1,21 +1,9 @@
-import { type ReactNode } from 'react';
 import clsx from 'clsx';
 
-interface BadgeProps {
-  children: ReactNode;
-  className?: string;
-}
+interface BadgeProps { children: React.ReactNode; className?: string; }
 
 export function Badge({ children, className }: BadgeProps) {
   return (
-    <span
-      className={clsx(
-        'inline-block px-3 py-1 text-xs font-medium rounded-full',
-        'bg-[var(--accent-glow)] text-accent border border-[var(--border)]',
-        className,
-      )}
-    >
-      {children}
-    </span>
+    <span className={clsx('tech-badge', className)}>{children}</span>
   );
 }

@@ -2,6 +2,7 @@
   "slug": "telegram-bots",
   "previewImage": "/projects/telegram-bots.png",
   "technologies": ["NestJS", "Telegraf", "PostgreSQL", "OpenAI", "Redis"],
+  "category": "AI",
   "ru": {
     "title": "Telegram AI-боты",
     "shortDescription": "Серия умных Telegram-ботов для автоматизации бизнес-задач",

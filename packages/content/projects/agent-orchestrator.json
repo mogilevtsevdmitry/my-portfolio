@@ -2,6 +2,7 @@
   "slug": "agent-orchestrator",
   "previewImage": "/projects/agent-orchestrator.png",
   "technologies": ["NestJS", "PostgreSQL", "Redis", "OpenAI", "Docker"],
+  "category": "AI",
   "ru": {
     "title": "Agent Orchestrator",
     "shortDescription": "Платформа для управления и оркестрации AI-агентов в бизнес-процессах",

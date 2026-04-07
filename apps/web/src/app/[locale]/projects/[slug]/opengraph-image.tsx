@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
-import { getProjectBySlug } from '@/lib/projects';
+import { fetchProjectBySlug, getProjectTranslation } from '@/lib/projects';
 
-export const runtime = 'edge';
 export const alt = 'Project';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -11,8 +10,8 @@ export default async function Image({
 }: {
   params: { locale: string; slug: string };
 }) {
-  const project = getProjectBySlug(slug);
-  const content = project?.[locale as 'ru' | 'en'] ?? project?.ru;
+  const project = await fetchProjectBySlug(slug);
+  const content = project ? getProjectTranslation(project, locale) : null;
 
   return new ImageResponse(
     (
@@ -45,7 +44,7 @@ export default async function Image({
         <div style={{ fontSize: 22, color: '#86EFAC', maxWidth: 700 }}>
           {content?.shortDescription ?? ''}
         </div>
-        {project?.technologies && (
+        {project?.technologies && project.technologies.length > 0 && (
           <div style={{ display: 'flex', gap: 12, marginTop: 32, flexWrap: 'wrap' }}>
             {project.technologies.slice(0, 5).map((tech) => (
               <span

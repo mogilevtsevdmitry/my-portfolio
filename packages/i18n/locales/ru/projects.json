@@ -1,6 +1,11 @@
 {
   "title": "Проекты",
   "subtitle": "Реальные кейсы с измеримыми результатами",
+  "pageTitle": "Проекты",
+  "pageSubtitle": "Реальные кейсы с измеримыми результатами",
+  "filterAll": "Все",
+  "allProjects": "Все проекты",
+  "allProjectsBtn": "Все проекты →",
   "openProject": "Открыть проект",
   "details": "Подробнее",
   "sections": {

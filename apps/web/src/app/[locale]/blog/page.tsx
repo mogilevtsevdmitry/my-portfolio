@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/Card';
 import { Link } from '@/navigation';
 import type { Metadata } from 'next';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -22,7 +22,7 @@ interface BlogPost {
 async function fetchPosts(locale: string): Promise<BlogPost[]> {
   try {
     const res = await fetch(`${API_URL}/blog?locale=${locale}&limit=20`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
     if (!res.ok) return [];
     const data = await res.json();

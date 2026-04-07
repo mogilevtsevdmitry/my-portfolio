@@ -3,6 +3,7 @@
   "previewImage": "/projects/gineo.png",
   "link": "https://gineo.app",
   "technologies": ["Next.js", "NestJS", "PostgreSQL", "Prisma", "D3.js"],
+  "category": "Fullstack",
   "ru": {
     "title": "Gineo — Семейное дерево",
     "shortDescription": "Приложение для создания и исследования интерактивных семейных деревьев",
