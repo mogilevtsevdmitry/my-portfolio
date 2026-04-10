@@ -2,16 +2,19 @@
 
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { SpotlightCard } from '@/components/effects/SpotlightCard';
 
 const techGroups = {
-  backend:       ['NestJS', 'PostgreSQL', 'Prisma', 'Redis', 'GraphQL'],
+  frontend:      ['React', 'Next.js', 'TypeScript', 'Tailwind', 'Zustand', 'TanStack Query'],
+  backend:       ['NestJS', 'Node.js', 'PostgreSQL', 'Prisma', 'Redis', 'GraphQL'],
   architecture:  ['DDD', 'Clean Architecture', 'Event-driven', 'Microservices', 'CQRS'],
-  infrastructure:['Docker', 'Kubernetes', 'CI/CD', 'Nginx', 'Terraform'],
+  infrastructure:['Docker', 'Kubernetes', 'CI/CD', 'Nginx', 'Terraform', 'S3'],
   ai:            ['LLM', 'Multi-agent', 'Orchestration', 'RAG', 'Tool use'],
+  tools:         ['Git', 'Figma', 'Jest', 'Playwright', 'Storybook'],
 } as const;
 
 const groupIcons: Record<string, string> = {
-  backend: '◈', architecture: '◇', infrastructure: '◉', ai: '◎',
+  frontend: '◆', backend: '◈', architecture: '◇', infrastructure: '◉', ai: '◎', tools: '◐',
 };
 
 export function TechStack() {
@@ -53,9 +56,9 @@ export function TechStack() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {(Object.keys(techGroups) as Array<keyof typeof techGroups>).map((group, i) => (
-            <div
+            <SpotlightCard
               key={group}
               className={`reveal reveal-delay-${i + 1} ${isVisible ? 'is-visible' : ''} glass-card p-6`}
             >
@@ -67,12 +70,12 @@ export function TechStack() {
                   {t(`groups.${group}`)}
                 </h3>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 relative z-[1]">
                 {techGroups[group].map((tech) => (
                   <span key={tech} className="tech-badge">{tech}</span>
                 ))}
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>

@@ -259,3 +259,68 @@ body {
   50%       { transform: translateY(6px); opacity: 0.4; }
 }
 .scroll-bounce { animation: scrollBounce 1.8s ease-in-out infinite; }
+
+/* ────────────────────────────────────────────── */
+/* Effects library keyframes                     */
+/* ────────────────────────────────────────────── */
+
+/* ShinyText / GradientText — sweeps a highlight across masked text */
+@keyframes shiny-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Aurora blobs */
+@keyframes aurora-drift-a {
+  0%   { transform: translate(-10%, -12%) rotate(0deg)  scale(1.0); }
+  50%  { transform: translate(12%,  10%) rotate(30deg)  scale(1.25); }
+  100% { transform: translate(-10%, -12%) rotate(0deg)  scale(1.0); }
+}
+@keyframes aurora-drift-b {
+  0%   { transform: translate(15%, 8%)   rotate(-10deg) scale(1.1); }
+  50%  { transform: translate(-18%, -5%) rotate(25deg)  scale(0.95); }
+  100% { transform: translate(15%, 8%)   rotate(-10deg) scale(1.1); }
+}
+@keyframes aurora-drift-c {
+  0%   { transform: translate(-5%, 15%)  rotate(15deg)  scale(0.9); }
+  50%  { transform: translate(8%,  -10%) rotate(-20deg) scale(1.2); }
+  100% { transform: translate(-5%, 15%)  rotate(15deg)  scale(0.9); }
+}
+.aurora-blob {
+  position: absolute;
+  inset: -20%;
+  mix-blend-mode: screen;
+  filter: blur(60px);
+  will-change: transform;
+}
+.aurora-blob-1 { animation: aurora-drift-a 18s ease-in-out infinite; }
+.aurora-blob-2 { animation: aurora-drift-b 22s ease-in-out infinite; }
+.aurora-blob-3 { animation: aurora-drift-c 26s ease-in-out infinite; }
+
+/* SpotlightCard — radial highlight follows mouse */
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--spot-r, 360px) circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(var(--spot-c, 201, 168, 76), 0.18),
+    transparent 60%
+  );
+  opacity: var(--spot-a, 0);
+  transition: opacity 320ms ease;
+}
+
+/* Magnetic badge hover — for TechStack tags */
+.tech-badge {
+  transition: transform 340ms cubic-bezier(0.16,1,0.3,1), border-color 340ms ease, color 340ms ease, background 340ms ease;
+  will-change: transform;
+}
+.tech-badge:hover {
+  transform: translateY(-2px) scale(1.04);
+  color: var(--accent-light);
+  border-color: var(--border-hover);
+  background: rgba(201, 168, 76, 0.08);
+}

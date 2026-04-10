@@ -1,10 +1,12 @@
 {
   "title": "Технологии",
-  "subtitle": "Стек как инструмент решения задач",
+  "subtitle": "Полный стек от UI до инфраструктуры",
   "groups": {
+    "frontend": "Frontend",
     "backend": "Backend",
     "architecture": "Архитектура",
     "infrastructure": "Инфраструктура",
-    "ai": "AI"
+    "ai": "AI",
+    "tools": "Инструменты"
   }
 }

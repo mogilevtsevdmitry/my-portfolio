@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { ClickSpark } from '@/components/effects/ClickSpark';
 import type { Metadata } from 'next';
 
 interface LocaleLayoutProps {
@@ -50,6 +51,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div className="grain-overlay" aria-hidden />
+      <ClickSpark />
       <Navbar locale={locale as Locale} />
       <main className="flex-1">{children}</main>
       <Footer />

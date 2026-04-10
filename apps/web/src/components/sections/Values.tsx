@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { SpotlightCard } from '@/components/effects/SpotlightCard';
 
 interface ValueCard { key: string; title: string; problem: string; solution: string; result: string; }
 
@@ -37,7 +38,7 @@ export function Values() {
 
         <div className="grid md:grid-cols-2 gap-5">
           {cards.map((card, i) => (
-            <div
+            <SpotlightCard
               key={card.key}
               className={`value-card reveal reveal-delay-${(i % 4) + 1} ${isVisible ? 'is-visible' : ''}`}
             >
@@ -81,7 +82,7 @@ export function Values() {
                   <span style={{ color: 'var(--accent-light)', fontWeight: 500, lineHeight: 1.6 }}>{card.result}</span>
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>

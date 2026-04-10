@@ -2,11 +2,17 @@
   "name": "Dmitry Mogilevtsev",
   "firstName": "Dmitry",
   "lastName": "Mogilevtsev",
-  "label": "Developer × Entrepreneur",
-  "specialization": "Specialization",
-  "specializationLine": "AI · Backend · SaaS",
-  "title": "AI Systems Architect & Scalable Product Builder",
-  "subtitle": "I help businesses automate processes, reduce costs, and grow through AI and systems architecture",
+  "label": "Fullstack × AI × Entrepreneur",
+  "specialization": "Stack",
+  "specializationLine": "Fullstack · AI · SaaS",
+  "title": "Fullstack Engineer & AI Product Architect",
+  "subtitle": "I build products end to end — from UI to infrastructure. React, Next.js, NestJS, AI agents, and scalable architecture.",
+  "roles": [
+    "Fullstack Engineer",
+    "AI Architect",
+    "Product Developer",
+    "Entrepreneur"
+  ],
   "stats": {
     "experience": "years experience",
     "projects": "projects",

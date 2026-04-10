@@ -1,10 +1,12 @@
 {
   "title": "Technologies",
-  "subtitle": "Stack as a problem-solving tool",
+  "subtitle": "Full stack, from UI to infrastructure",
   "groups": {
+    "frontend": "Frontend",
     "backend": "Backend",
     "architecture": "Architecture",
     "infrastructure": "Infrastructure",
-    "ai": "AI"
+    "ai": "AI",
+    "tools": "Tools"
   }
 }
