@@ -10,8 +10,9 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules 2>/dev/null || true
+# Copy entire deps stage output to preserve pnpm virtual store and workspace symlinks
+COPY --from=deps /app/ ./
+# Overlay with actual source code
 COPY . .
 RUN cd apps/api && pnpm exec prisma generate
 RUN cd apps/api && pnpm exec nest build

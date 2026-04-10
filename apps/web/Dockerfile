@@ -12,7 +12,9 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy entire deps stage output to preserve pnpm virtual store and workspace symlinks
+COPY --from=deps /app/ ./
+# Overlay with actual source code
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN cd apps/web && pnpm exec next build
