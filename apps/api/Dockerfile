@@ -27,4 +27,6 @@ COPY --from=builder /app/ ./
 WORKDIR /app/apps/api
 EXPOSE 3001
 # Use the locally-installed prisma CLI from the workspace node_modules.
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]
+# Nest build in this monorepo emits to dist/apps/api/src/main.js (preserving
+# the workspace directory structure), not dist/main.js.
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/apps/api/src/main.js"]
