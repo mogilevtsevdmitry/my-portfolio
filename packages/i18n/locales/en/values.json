@@ -2,6 +2,20 @@
   "title": "How I Can Help",
   "cards": [
     {
+      "key": "web",
+      "title": "Websites & Landing Pages",
+      "problem": "You need a polished site that loads instantly and converts",
+      "solution": "Next.js with on-brand design, responsive layouts, SEO, analytics, CMS",
+      "result": "Any scale: from promo landings to full corporate portals"
+    },
+    {
+      "key": "saas",
+      "title": "SaaS & Product Development",
+      "problem": "A product idea that needs to become a working SaaS",
+      "solution": "Full-stack delivery: UI, backend, database, integrations, billing",
+      "result": "MVP shipped in weeks, ready to grow"
+    },
+    {
       "key": "ai",
       "title": "AI Agents & Automation",
       "problem": "Manual processes requiring constant team involvement",
@@ -9,10 +23,10 @@
       "result": "Reduce operational costs by up to 60%"
     },
     {
-      "key": "saas",
-      "title": "SaaS & Architecture",
+      "key": "architecture",
+      "title": "Architecture & High-Load",
       "problem": "A monolith that won't scale with growth",
-      "solution": "Designing microservice architecture with DDD",
+      "solution": "Designing microservice architecture with DDD and event-driven",
       "result": "Systems ready for 10x load increase"
     },
     {

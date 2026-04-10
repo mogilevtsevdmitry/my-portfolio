@@ -7,7 +7,12 @@ import { SpotlightCard } from '@/components/effects/SpotlightCard';
 interface ValueCard { key: string; title: string; problem: string; solution: string; result: string; }
 
 const icons: Record<string, string> = {
-  ai: '◈', saas: '◇', devops: '◉', consulting: '◎',
+  web: '◆',
+  saas: '◇',
+  ai: '◈',
+  architecture: '◉',
+  devops: '◎',
+  consulting: '◐',
 };
 
 export function Values() {
@@ -36,11 +41,11 @@ export function Values() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {cards.map((card, i) => (
             <SpotlightCard
               key={card.key}
-              className={`value-card reveal reveal-delay-${(i % 4) + 1} ${isVisible ? 'is-visible' : ''}`}
+              className={`value-card reveal reveal-delay-${(i % 6) + 1} ${isVisible ? 'is-visible' : ''}`}
             >
               {/* Icon + number */}
               <div className="flex items-center justify-between mb-6">
