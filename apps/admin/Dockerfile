@@ -15,8 +15,9 @@ WORKDIR /app
 COPY --from=deps /app/ ./
 # Overlay with actual source code
 COPY . .
-# VITE_API_URL=/api means the SPA calls /api/... which nginx proxies to the api service
-ARG VITE_API_URL=/api
+# VITE_API_URL is baked at build time. In Dokploy pass the absolute public
+# URL of the API (e.g. https://api.dmitry.dev). Locally defaults to localhost.
+ARG VITE_API_URL=http://localhost:3001
 ENV VITE_API_URL=${VITE_API_URL}
 RUN cd apps/admin && pnpm build
 

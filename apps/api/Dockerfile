@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 RUN npm install -g pnpm
 
 FROM base AS deps
@@ -17,14 +17,14 @@ COPY . .
 RUN cd apps/api && pnpm exec prisma generate
 RUN cd apps/api && pnpm exec nest build
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN npm install -g pnpm
-# Copy root node_modules (hoisted pnpm deps like @prisma/client)
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/api/dist ./dist
-COPY --from=builder /app/apps/api/prisma ./prisma
-COPY --from=builder /app/apps/api/package.json ./package.json
+# Copy entire builder output. This preserves pnpm workspace symlinks
+# (apps/api/node_modules → .pnpm store, @portfolio/shared → packages/shared, etc.)
+# and keeps the locally-pinned prisma CLI reachable via the bin wrapper.
+COPY --from=builder /app/ ./
+WORKDIR /app/apps/api
 EXPOSE 3001
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# Use the locally-installed prisma CLI from the workspace node_modules.
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]

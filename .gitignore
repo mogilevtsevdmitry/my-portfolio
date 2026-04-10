@@ -51,3 +51,6 @@ apps/api/tsconfig.build.tsbuildinfo
 
 # Next.js env types
 apps/web/next-env.d.ts
+
+# Prisma generated client (v7)
+apps/api/src/generated/
