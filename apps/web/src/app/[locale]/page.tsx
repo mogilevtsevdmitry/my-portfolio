@@ -10,8 +10,8 @@ import { FullPageScroll } from '@/components/layout/FullPageScroll';
 import { fetchAllProjects } from '@/lib/projects';
 
 const SECTIONS = [
-  'Главная', 'Обо мне', 'Услуги', 'Проекты',
-  'Технологии', 'ИИ-агенты', 'Процесс', 'Контакты',
+  'Главная', 'Обо мне', 'Услуги', 'ИИ-агенты',
+  'Проекты', 'Технологии', 'Процесс', 'Контакты',
 ];
 
 export default async function HomePage() {
@@ -22,9 +22,9 @@ export default async function HomePage() {
       <Hero />
       <About />
       <Values />
+      <AIAgents />
       <Projects projects={projects} />
       <TechStack />
-      <AIAgents />
       <WorkProcess />
       <ContactForm />
     </FullPageScroll>

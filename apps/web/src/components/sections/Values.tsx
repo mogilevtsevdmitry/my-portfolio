@@ -20,7 +20,7 @@ export function Values() {
       style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">02. Чем полезен</span>
+          <span className="section-eyebrow">02. Чем я полезен</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 

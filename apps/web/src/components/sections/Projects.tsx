@@ -29,7 +29,7 @@ export function Projects({ projects }: ProjectsProps) {
 
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">03. Проекты</span>
+          <span className="section-eyebrow">04. Проекты</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 

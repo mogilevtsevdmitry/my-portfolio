@@ -14,6 +14,10 @@ const capabilities = [
 export function AIAgents() {
   return (
     <Section id="ai">
+      <div className="mb-14">
+        <span className="section-eyebrow">03. ИИ-агенты</span>
+        <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
+      </div>
       <div className="text-center mb-12">
         <GlowText as="h2" className="text-3xl md:text-4xl font-bold mb-4">
           AI-агенты и автоматизация

@@ -102,9 +102,24 @@ body {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
-    padding: 1.75rem 1.25rem;
+    padding: 1.25rem 0.75rem;
     text-align: center;
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    /* Grid items have min-width: auto (= min-content) by default, which
+       prevents shrinking below the longest word and causes horizontal
+       overflow on narrow viewports. Force shrink + wrap anywhere. */
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .stat-card :where(div) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 768px) {
+    .stat-card {
+      padding: 1.75rem 1.25rem;
+    }
   }
   .stat-card:hover {
     border-color: var(--border-hover);

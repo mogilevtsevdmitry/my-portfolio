@@ -18,7 +18,7 @@ export function Footer() {
         <div className="flex items-center gap-6">
           {[
             { label: 'Telegram', href: 'https://t.me/mogilevtsevdmitry' },
-            { label: 'Email',    href: 'mailto:hello@dmitry.dev' },
+            { label: 'Email',    href: 'mailto:webmogilevtsev@ya.ru' },
             { label: 'GitHub',   href: 'https://github.com/mogilevtsevdmitry' },
           ].map(({ label, href }) => (
             <a

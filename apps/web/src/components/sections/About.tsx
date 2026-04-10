@@ -96,7 +96,7 @@ export function About() {
           {/* Right: Stats */}
           <div
             ref={statsRef}
-            className={`reveal-right ${statsVisible ? 'is-visible' : ''} grid grid-cols-2 gap-4`}
+            className={`reveal-right ${statsVisible ? 'is-visible' : ''} grid grid-cols-2 gap-3 sm:gap-4 min-w-0`}
           >
             {stats.map(({ num, label }, i) => (
               <div
@@ -105,13 +105,22 @@ export function About() {
               >
                 <div
                   className="font-display font-light"
-                  style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 1, color: 'var(--accent)' }}
+                  style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)', lineHeight: 1, color: 'var(--accent)' }}
                 >
                   {num}
                 </div>
                 <div
-                  className="mt-2 text-xs leading-relaxed"
-                  style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-syne)', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '0.6rem' }}
+                  className="mt-2 text-xs leading-snug"
+                  style={{
+                    color: 'var(--text-muted)',
+                    fontFamily: 'var(--font-syne)',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    fontSize: 'clamp(0.5rem, 1.6vw, 0.6rem)',
+                    overflowWrap: 'anywhere',
+                    wordBreak: 'break-word',
+                    hyphens: 'auto',
+                  }}
                 >
                   {label}
                 </div>

@@ -34,7 +34,7 @@ export function ContactForm() {
     <Section id="contacts">
       <div className="max-w-2xl mx-auto">
         <div className="mb-12">
-          <span className="section-eyebrow">06. Контакты</span>
+          <span className="section-eyebrow">07. Контакты</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
           <h2
             className="font-display font-light leading-tight mt-8 mb-4"
@@ -103,8 +103,8 @@ export function ContactForm() {
           <p className="text-xs mb-4" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-syne)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('or')}</p>
           <div className="flex justify-center gap-8">
             {[
-              { label: t('telegram'), href: 'https://t.me/your_handle' },
-              { label: t('email'), href: 'mailto:hello@dmitry.dev' },
+              { label: t('telegram'), href: 'https://t.me/mogilevtsevdmitry' },
+              { label: t('email'), href: 'mailto:webmogilevtsev@ya.ru' },
             ].map(({ label, href }) => (
               <a
                 key={href}

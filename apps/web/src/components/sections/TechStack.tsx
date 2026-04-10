@@ -40,7 +40,7 @@ export function TechStack() {
 
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">04. Технологии</span>
+          <span className="section-eyebrow">05. Технологии</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 

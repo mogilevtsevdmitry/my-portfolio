@@ -12,6 +12,10 @@ export function WorkProcess() {
 
   return (
     <Section id="process" alt>
+      <div className="mb-14">
+        <span className="section-eyebrow">06. Процесс</span>
+        <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
+      </div>
       <GlowText as="h2" className="text-3xl md:text-4xl font-bold text-center mb-12">
         {t('title')}
       </GlowText>
