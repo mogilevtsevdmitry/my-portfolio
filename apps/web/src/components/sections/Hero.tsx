@@ -41,7 +41,7 @@ export function Hero() {
       />
 
       <div className="w-full max-w-[1400px] mx-auto px-8 md:px-16 lg:px-24 relative z-10">
-        <div className="grid md:grid-cols-[1.15fr_0.85fr] gap-0 md:gap-12 items-center min-h-screen py-28">
+        <div className="grid md:grid-cols-[1.15fr_0.85fr] gap-0 md:gap-12 items-center py-28">
 
           {/* ── Left: Content ── */}
           <div className="relative z-10 flex flex-col justify-center">
@@ -113,12 +113,9 @@ export function Hero() {
             {/* CTAs */}
             <div className="hero-anim-5 flex flex-wrap gap-4 mt-10">
               <Magnet strength={10}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    dispatchTrack('hero_cta_click', 'discuss');
-                    window.location.hash = 'contacts';
-                  }}
+                <a
+                  href="#contacts"
+                  onClick={() => dispatchTrack('hero_cta_click', 'discuss')}
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-ui font-600 text-sm tracking-wide transition-all duration-300 cursor-pointer"
                   style={{
                     background: 'var(--accent)',
@@ -128,6 +125,7 @@ export function Hero() {
                     letterSpacing: '0.06em',
                     boxShadow: '0 0 30px var(--accent-glow-strong)',
                     border: 'none',
+                    textDecoration: 'none',
                   }}
                   onMouseEnter={e => {
                     (e.currentTarget as HTMLElement).style.boxShadow = '0 0 50px var(--accent-glow-strong), 0 8px 30px rgba(201,168,76,0.3)';
@@ -140,16 +138,13 @@ export function Hero() {
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                </button>
+                </a>
               </Magnet>
 
               <Magnet strength={8}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    dispatchTrack('hero_cta_click', 'cases');
-                    window.location.hash = 'projects';
-                  }}
+                <a
+                  href="#projects"
+                  onClick={() => dispatchTrack('hero_cta_click', 'cases')}
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm transition-all duration-300 cursor-pointer"
                   style={{
                     border: '1px solid var(--border-hover)',
@@ -158,6 +153,7 @@ export function Hero() {
                     fontWeight: 600,
                     letterSpacing: '0.06em',
                     background: 'transparent',
+                    textDecoration: 'none',
                   }}
                   onMouseEnter={e => {
                     (e.currentTarget as HTMLElement).style.background = 'var(--accent-glow)';
@@ -167,7 +163,7 @@ export function Hero() {
                   }}
                 >
                   {t('cta.cases')}
-                </button>
+                </a>
               </Magnet>
             </div>
 

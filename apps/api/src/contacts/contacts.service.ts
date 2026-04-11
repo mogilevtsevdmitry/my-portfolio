@@ -1,27 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramService } from './notifications/telegram.service';
 import { EmailService } from './notifications/email.service';
+import { CaptchaService } from './captcha.service';
 import { CreateContactDto } from './dto/create-contact.dto';
+
+const escapeHtml = (s: string): string =>
+  s.replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!),
+  );
 
 @Injectable()
 export class ContactsService {
+  private readonly logger = new Logger(ContactsService.name);
+
   constructor(
     private prisma: PrismaService,
     private telegram: TelegramService,
     private email: EmailService,
+    private captcha: CaptchaService,
   ) {}
 
   async create(dto: CreateContactDto) {
-    const contact = await this.prisma.contact.create({ data: dto });
+    // 1. Honeypot. Real browsers leave `website` empty; bots fill every field.
+    if (dto.website && dto.website.length > 0) {
+      this.logger.warn('Honeypot triggered, silently dropping request');
+      // Return a fake success so scrapers don't learn they're blocked.
+      return { id: 'silent-drop', createdAt: new Date() };
+    }
+
+    // 2. Math captcha verification.
+    if (!this.captcha.verify(dto.captchaToken, dto.captchaAnswer)) {
+      throw new BadRequestException('Неверный ответ на проверку. Обновите капчу и попробуйте ещё раз.');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { captchaToken, captchaAnswer, website, ...data } = dto;
+    const contact = await this.prisma.contact.create({ data });
 
     const message = [
-      `📩 <b>New Contact Request</b>`,
+      `📩 <b>Новая заявка с сайта</b>`,
       ``,
-      `👤 <b>Name:</b> ${dto.name}`,
-      `📬 <b>Contact:</b> ${dto.contact}`,
-      `📝 <b>Description:</b>`,
-      dto.description,
+      `👤 <b>Имя:</b> ${escapeHtml(dto.name)}`,
+      `📬 <b>Контакт:</b> ${escapeHtml(dto.contact)}`,
+      `📝 <b>Описание:</b>`,
+      escapeHtml(dto.description),
     ].join('\n');
 
     this.telegram.sendMessage(message).catch(() => undefined);

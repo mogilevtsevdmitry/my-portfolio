@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
+import { MathCaptcha } from '@/components/ui/MathCaptcha';
 import { submitContact } from '@/lib/api';
 import { trackEvent } from '@/lib/analytics';
 
@@ -13,21 +14,43 @@ export function ContactForm() {
   const t = useTranslations('contacts');
   const [status, setStatus] = useState<Status>('idle');
   const [form, setForm] = useState({ name: '', contact: '', description: '' });
+  // Honeypot — hidden from real users, catches dumb bots.
+  const [website, setWebsite] = useState('');
+  const [captcha, setCaptcha] = useState({ token: '', answer: '' });
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleFocus = () => { if (status === 'idle') trackEvent('contact_form_open'); };
 
+  const handleCaptchaChange = useCallback(
+    (state: { token: string; answer: string }) => setCaptcha(state),
+    [],
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
+    setErrorMessage(null);
     try {
-      await submitContact(form);
+      await submitContact({
+        ...form,
+        website,
+        captchaToken: captcha.token,
+        captchaAnswer: Number(captcha.answer),
+      });
       trackEvent('contact_submit');
       setStatus('success');
       setForm({ name: '', contact: '', description: '' });
-    } catch { setStatus('error'); }
+      setWebsite('');
+    } catch (err) {
+      setStatus('error');
+      setErrorMessage(err instanceof Error ? err.message : null);
+      // Rotate the challenge so the user gets a fresh one after any failure.
+      setCaptchaResetKey((k) => k + 1);
+    }
   };
 
   return (
@@ -89,11 +112,42 @@ export function ContactForm() {
               />
             </div>
 
-            {status === 'error' && (
-              <p className="text-sm" style={{ color: '#f87171' }}>{t('form.error')}</p>
+            {/* Honeypot: invisible to real users, caught by bots that auto-fill every field. */}
+            <div aria-hidden style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+              <label>
+                Website
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <MathCaptcha
+              label={t('form.captcha')}
+              placeholder={t('form.captchaPlaceholder')}
+              onChange={handleCaptchaChange}
+              resetKey={captchaResetKey}
+              error={status === 'error' && errorMessage?.includes('капч') ? errorMessage : null}
+            />
+
+            {status === 'error' && !errorMessage?.includes('капч') && (
+              <p className="text-sm" style={{ color: '#f87171' }}>
+                {errorMessage ?? t('form.error')}
+              </p>
             )}
 
-            <Button type="submit" size="lg" loading={status === 'loading'} className="w-full">
+            <Button
+              type="submit"
+              size="lg"
+              loading={status === 'loading'}
+              disabled={!captcha.token || !captcha.answer}
+              className="w-full"
+            >
               {t('form.submit')}
             </Button>
           </form>

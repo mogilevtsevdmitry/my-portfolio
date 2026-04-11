@@ -21,8 +21,8 @@ export function Values() {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section id="values" className="relative py-24 md:py-36 px-6 md:px-16 lg:px-24 overflow-hidden"
-      style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
+    <section id="values" className="relative py-24 md:py-32 px-6 md:px-16 lg:px-24 overflow-hidden"
+      style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
           <span className="section-eyebrow">02. Чем я полезен</span>

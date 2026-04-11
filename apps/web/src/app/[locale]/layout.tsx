@@ -24,19 +24,30 @@ export async function generateMetadata({
   if (!locales.includes(locale as Locale)) return {};
 
   const t = await getTranslations({ locale, namespace: 'hero' });
+  const title = `${t('name')} — ${t('title')}`;
+  const description = t('subtitle');
 
   return {
     title: {
-      default: `${t('name')} — ${t('title')}`,
+      default: title,
       template: `%s | ${t('name')}`,
     },
-    description: t('subtitle'),
+    description,
+    // opengraph-image.tsx + twitter-image.tsx in the same route segment are
+    // picked up automatically by Next.js — no need to list images here.
     openGraph: {
       type: 'website',
       locale: locale === 'ru' ? 'ru_RU' : 'en_US',
-      images: [{ url: '/og-default.png', width: 1200, height: 630 }],
+      siteName: t('name'),
+      title,
+      description,
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      creator: '@mogilevtsevdmitry',
+    },
   };
 }
 

@@ -8,6 +8,8 @@
     "contactPlaceholder": "Email or @telegram",
     "description": "Task Description",
     "descriptionPlaceholder": "Tell me more about the project...",
+    "captcha": "Verification",
+    "captchaPlaceholder": "Answer",
     "submit": "Send Request",
     "success": "Request sent! I'll respond within 24 hours.",
     "error": "Something went wrong. Please try again."

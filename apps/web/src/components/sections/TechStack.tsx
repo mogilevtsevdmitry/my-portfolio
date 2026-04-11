@@ -24,8 +24,8 @@ export function TechStack() {
   return (
     <section
       id="tech"
-      className="relative py-24 md:py-36 px-6 md:px-16 lg:px-24 overflow-hidden"
-      style={{ background: 'var(--bg-secondary)', minHeight: '100vh' }}
+      className="relative py-24 md:py-32 px-6 md:px-16 lg:px-24 overflow-hidden"
+      style={{ background: 'var(--bg-secondary)' }}
     >
       {/* Marquee ticker at top */}
       <div className="overflow-hidden mb-16 opacity-20 select-none" aria-hidden>

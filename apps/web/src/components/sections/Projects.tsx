@@ -17,8 +17,8 @@ export function Projects({ projects }: ProjectsProps) {
   return (
     <section
       id="projects"
-      className="relative py-24 md:py-36 px-6 md:px-16 lg:px-24 overflow-hidden"
-      style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}
+      className="relative py-24 md:py-32 px-6 md:px-16 lg:px-24 overflow-hidden"
+      style={{ background: 'var(--bg-primary)' }}
     >
       {/* Ambient glow */}
       <div

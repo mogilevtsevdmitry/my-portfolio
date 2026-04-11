@@ -30,13 +30,6 @@ export function Navbar({ locale }: NavbarProps) {
     { href: '/#contacts', label: t('nav.contacts') },
   ];
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    if (href.startsWith('/#') && currentPath === '/') {
-      e.preventDefault();
-      window.location.hash = href.slice(2);
-    }
-  };
-
   const switchLocale = () => {
     router.replace(currentPath, { locale: locale === 'ru' ? 'en' : 'ru' });
   };
@@ -81,7 +74,6 @@ export function Navbar({ locale }: NavbarProps) {
             <Link
               key={href}
               href={href}
-              onClick={(e) => handleNavClick(e, href)}
               className="relative text-xs tracking-widest uppercase transition-colors duration-200"
               style={{
                 fontFamily: 'var(--font-syne)',
@@ -158,7 +150,7 @@ export function Navbar({ locale }: NavbarProps) {
             <Link
               key={href}
               href={href}
-              onClick={(e) => { handleNavClick(e, href); setOpen(false); }}
+              onClick={() => setOpen(false)}
               className="text-sm py-1 transition-colors duration-200"
               style={{
                 fontFamily: 'var(--font-syne)',

@@ -8,6 +8,8 @@
     "contactPlaceholder": "Email или @telegram",
     "description": "Описание задачи",
     "descriptionPlaceholder": "Расскажите подробнее о проекте...",
+    "captcha": "Проверка",
+    "captchaPlaceholder": "Ответ",
     "submit": "Отправить заявку",
     "success": "Заявка отправлена! Отвечу в течение 24 часов.",
     "error": "Что-то пошло не так. Попробуйте ещё раз."

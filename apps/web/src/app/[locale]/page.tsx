@@ -6,19 +6,13 @@ import { TechStack } from '@/components/sections/TechStack';
 import { AIAgents } from '@/components/sections/AIAgents';
 import { WorkProcess } from '@/components/sections/WorkProcess';
 import { ContactForm } from '@/components/sections/ContactForm';
-import { FullPageScroll } from '@/components/layout/FullPageScroll';
 import { fetchAllProjects } from '@/lib/projects';
-
-const SECTIONS = [
-  'Главная', 'Обо мне', 'Услуги', 'ИИ-агенты',
-  'Проекты', 'Технологии', 'Процесс', 'Контакты',
-];
 
 export default async function HomePage() {
   const projects = await fetchAllProjects();
 
   return (
-    <FullPageScroll sectionLabels={SECTIONS}>
+    <>
       <Hero />
       <About />
       <Values />
@@ -27,6 +21,6 @@ export default async function HomePage() {
       <TechStack />
       <WorkProcess />
       <ContactForm />
-    </FullPageScroll>
+    </>
   );
 }
