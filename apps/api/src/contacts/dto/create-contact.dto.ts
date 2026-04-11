@@ -34,10 +34,11 @@ export class CreateContactDto {
 
   /**
    * Honeypot field — real users don't see it, bots fill it.
-   * Must be empty / undefined. Any value → request rejected.
+   * Validated only for type/length (no business rule) so the service can
+   * silently drop suspicious requests without revealing the check.
    */
   @IsOptional()
   @IsString()
-  @MaxLength(0, { message: 'spam detected' })
+  @MaxLength(120)
   website?: string;
 }

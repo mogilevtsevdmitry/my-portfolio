@@ -31,6 +31,22 @@ export async function fetchCaptcha(): Promise<CaptchaChallenge> {
   return res.json();
 }
 
+/**
+ * Error thrown by `submitContact` when the API returns a non-2xx status.
+ * Carries a machine-readable `code` (e.g. 'CAPTCHA_INVALID') so the UI can
+ * pick the localized message without parsing the server's string.
+ */
+export class ContactSubmitError extends Error {
+  constructor(
+    public readonly code: string | null,
+    public readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'ContactSubmitError';
+  }
+}
+
 export async function submitContact(payload: ContactPayload): Promise<void> {
   const res = await fetch(`${API_URL}/contacts`, {
     method: 'POST',
@@ -41,9 +57,10 @@ export async function submitContact(payload: ContactPayload): Promise<void> {
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
+    const code = typeof errBody?.code === 'string' ? errBody.code : null;
     const msg =
       (Array.isArray(errBody?.message) ? errBody.message[0] : errBody?.message) ??
       `Contact submission failed: ${res.status}`;
-    throw new Error(msg);
+    throw new ContactSubmitError(code, res.status, msg);
   }
 }

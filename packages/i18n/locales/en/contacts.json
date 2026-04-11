@@ -12,7 +12,9 @@
     "captchaPlaceholder": "Answer",
     "submit": "Send Request",
     "success": "Request sent! I'll respond within 24 hours.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "errorCaptcha": "Wrong answer. Refresh the challenge and try again.",
+    "errorValidation": "Please check the form fields."
   },
   "or": "or write directly",
   "telegram": "Telegram",

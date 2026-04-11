@@ -35,7 +35,13 @@ export class ContactsService {
 
     // 2. Math captcha verification.
     if (!this.captcha.verify(dto.captchaToken, dto.captchaAnswer)) {
-      throw new BadRequestException('Неверный ответ на проверку. Обновите капчу и попробуйте ещё раз.');
+      // Return a machine-readable `code` so the frontend can pick a
+      // localized message (the user's locale isn't known to the server).
+      throw new BadRequestException({
+        statusCode: 400,
+        code: 'CAPTCHA_INVALID',
+        message: 'Captcha verification failed',
+      });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

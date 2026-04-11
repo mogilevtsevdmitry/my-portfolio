@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { MathCaptcha } from '@/components/ui/MathCaptcha';
-import { submitContact } from '@/lib/api';
+import { submitContact, ContactSubmitError } from '@/lib/api';
 import { trackEvent } from '@/lib/analytics';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -18,7 +18,7 @@ export function ContactForm() {
   const [website, setWebsite] = useState('');
   const [captcha, setCaptcha] = useState({ token: '', answer: '' });
   const [captchaResetKey, setCaptchaResetKey] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -33,7 +33,7 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
-    setErrorMessage(null);
+    setErrorCode(null);
     try {
       await submitContact({
         ...form,
@@ -47,11 +47,22 @@ export function ContactForm() {
       setWebsite('');
     } catch (err) {
       setStatus('error');
-      setErrorMessage(err instanceof Error ? err.message : null);
+      if (err instanceof ContactSubmitError) {
+        setErrorCode(err.code ?? 'UNKNOWN');
+      } else {
+        setErrorCode('UNKNOWN');
+      }
       // Rotate the challenge so the user gets a fresh one after any failure.
       setCaptchaResetKey((k) => k + 1);
     }
   };
+
+  // Pick a localized message for the server-side error code.
+  const resolveErrorMessage = (code: string | null): string => {
+    if (code === 'CAPTCHA_INVALID') return t('form.errorCaptcha');
+    return t('form.error');
+  };
+  const isCaptchaError = errorCode === 'CAPTCHA_INVALID';
 
   return (
     <Section id="contacts">
@@ -132,12 +143,12 @@ export function ContactForm() {
               placeholder={t('form.captchaPlaceholder')}
               onChange={handleCaptchaChange}
               resetKey={captchaResetKey}
-              error={status === 'error' && errorMessage?.includes('капч') ? errorMessage : null}
+              error={status === 'error' && isCaptchaError ? resolveErrorMessage(errorCode) : null}
             />
 
-            {status === 'error' && !errorMessage?.includes('капч') && (
+            {status === 'error' && !isCaptchaError && (
               <p className="text-sm" style={{ color: '#f87171' }}>
-                {errorMessage ?? t('form.error')}
+                {resolveErrorMessage(errorCode)}
               </p>
             )}
 
