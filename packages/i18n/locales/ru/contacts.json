@@ -5,7 +5,7 @@
     "name": "Имя",
     "namePlaceholder": "Ваше имя",
     "contact": "Контакт",
-    "contactPlaceholder": "Email или @telegram",
+    "contactPlaceholder": "Email, телефон или @telegram",
     "description": "Описание задачи",
     "descriptionPlaceholder": "Расскажите подробнее о проекте...",
     "captcha": "Проверка",
@@ -14,7 +14,8 @@
     "success": "Заявка отправлена! Отвечу в течение 24 часов.",
     "error": "Что-то пошло не так. Попробуйте ещё раз.",
     "errorCaptcha": "Неверный ответ на проверку. Обновите код и попробуйте снова.",
-    "errorValidation": "Проверьте правильность заполнения полей."
+    "errorValidation": "Проверьте правильность заполнения полей.",
+    "errorContactFormat": "Укажите email, телефон или имя пользователя в Telegram."
   },
   "or": "или напишите напрямую",
   "telegram": "Telegram",

@@ -6,17 +6,30 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
+
+/**
+ * Accepts any of:
+ *   - Email:                          user@example.com
+ *   - Telegram handle with @:         @mogilevtsevdmitry
+ *   - Telegram handle without @:      mogilevtsevdmitry
+ *   - Telegram URL:                   https://t.me/mogilevtsevdmitry, t.me/handle
+ *   - Phone number (international):   +79001234567
+ */
+const CONTACT_REGEX =
+  /^(?:[^\s@]+@[^\s@]+\.[^\s@]+|(?:https?:\/\/)?(?:t\.me|telegram\.me)\/[a-zA-Z0-9_]{4,32}|@?[a-zA-Z0-9_]{4,32}|\+?[0-9\s\-()]{7,20})$/;
 
 export class CreateContactDto {
   @IsString()
   @MinLength(2)
   @MaxLength(80)
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   name: string;
 
   @IsString()
-  @Matches(/^([^\s@]+@[^\s@]+\.[^\s@]+|@[a-zA-Z0-9_]{4,32})$/, {
-    message: 'contact must be a valid email or Telegram handle starting with @',
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Matches(CONTACT_REGEX, {
+    message: 'CONTACT_FORMAT',
   })
   contact: string;
 

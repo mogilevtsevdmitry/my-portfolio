@@ -33,14 +33,17 @@ export async function fetchCaptcha(): Promise<CaptchaChallenge> {
 
 /**
  * Error thrown by `submitContact` when the API returns a non-2xx status.
- * Carries a machine-readable `code` (e.g. 'CAPTCHA_INVALID') so the UI can
- * pick the localized message without parsing the server's string.
+ * Carries a machine-readable `code` (e.g. 'CAPTCHA_INVALID', 'VALIDATION_ERROR')
+ * and, for validation errors, the list of offending field names and the raw
+ * validator messages, so the UI can pick the right localized label.
  */
 export class ContactSubmitError extends Error {
   constructor(
     public readonly code: string | null,
     public readonly status: number,
     message: string,
+    public readonly fields: string[] = [],
+    public readonly messages: string[] = [],
   ) {
     super(message);
     this.name = 'ContactSubmitError';
@@ -58,9 +61,13 @@ export async function submitContact(payload: ContactPayload): Promise<void> {
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
     const code = typeof errBody?.code === 'string' ? errBody.code : null;
-    const msg =
-      (Array.isArray(errBody?.message) ? errBody.message[0] : errBody?.message) ??
-      `Contact submission failed: ${res.status}`;
-    throw new ContactSubmitError(code, res.status, msg);
+    const rawMessages: string[] = Array.isArray(errBody?.message)
+      ? errBody.message
+      : errBody?.message
+        ? [errBody.message]
+        : [];
+    const msg = rawMessages[0] ?? `Contact submission failed: ${res.status}`;
+    const fields: string[] = Array.isArray(errBody?.fields) ? errBody.fields : [];
+    throw new ContactSubmitError(code, res.status, msg, fields, rawMessages);
   }
 }

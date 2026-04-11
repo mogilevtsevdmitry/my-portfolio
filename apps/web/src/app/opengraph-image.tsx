@@ -1,21 +1,18 @@
 import { ImageResponse } from 'next/og';
-import { getTranslations } from 'next-intl/server';
 
 export const alt = 'Dmitry Mogilevtsev — Fullstack Engineer & AI Product Architect';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default async function Image({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
-  const t = await getTranslations({ locale, namespace: 'hero' });
-  const firstName = t('firstName');
-  const lastName = t('lastName');
-  const label = t('label');
-  const specializationLine = t('specializationLine');
-
+/**
+ * Root-level OG image. Served at `/opengraph-image` so Telegram / Twitter /
+ * Facebook scrapers get a valid og:image even when they hit the bare domain
+ * before next-intl's middleware redirects them to `/ru` or `/en`.
+ *
+ * Same layout as the locale-specific version in `[locale]/opengraph-image.tsx`
+ * but without calling `getTranslations` (which requires a locale context).
+ */
+export default function Image() {
   return new ImageResponse(
     (
       <div
@@ -26,9 +23,9 @@ export default async function Image({
           flexDirection: 'column',
           justifyContent: 'center',
           padding: '80px',
-          // Dark base + two soft gold ambient glows, matching the site's Aurora.
           // Satori (the engine behind @vercel/og) doesn't parse the mixed
-          // `background:` shorthand — split into backgroundColor + backgroundImage.
+          // `background:` shorthand — split color and gradients into their own
+          // longhand properties.
           backgroundColor: '#09090A',
           backgroundImage:
             'radial-gradient(circle at 85% 20%, rgba(201,168,76,0.25), transparent 60%), ' +
@@ -37,7 +34,6 @@ export default async function Image({
           position: 'relative',
         }}
       >
-        {/* Top bar: label */}
         <div
           style={{
             display: 'flex',
@@ -64,11 +60,10 @@ export default async function Image({
               fontWeight: 700,
             }}
           >
-            {label}
+            Fullstack × AI × Entrepreneur
           </div>
         </div>
 
-        {/* Name — serif-style via heavy weight */}
         <div
           style={{
             display: 'flex',
@@ -85,7 +80,7 @@ export default async function Image({
               letterSpacing: -2,
             }}
           >
-            {firstName}
+            Dmitry
           </div>
           <div
             style={{
@@ -97,11 +92,10 @@ export default async function Image({
               marginTop: 6,
             }}
           >
-            {lastName}
+            Mogilevtsev
           </div>
         </div>
 
-        {/* Gold divider */}
         <div
           style={{
             height: 2,
@@ -111,7 +105,6 @@ export default async function Image({
           }}
         />
 
-        {/* Specialization line */}
         <div
           style={{
             color: '#B5A88A',
@@ -120,10 +113,9 @@ export default async function Image({
             fontWeight: 600,
           }}
         >
-          {specializationLine}
+          Fullstack · AI · SaaS
         </div>
 
-        {/* Bottom-right: site URL */}
         <div
           style={{
             position: 'absolute',

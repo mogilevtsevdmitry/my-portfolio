@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationError } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
@@ -39,6 +40,20 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      // Attach a machine-readable `code` so the frontend can pick a localized
+      // message instead of showing raw validator strings to the user.
+      exceptionFactory: (errors: ValidationError[]) => {
+        const flat = errors.flatMap((e) =>
+          Object.values(e.constraints ?? {}),
+        );
+        const fields = Array.from(new Set(errors.map((e) => e.property)));
+        return new BadRequestException({
+          statusCode: 400,
+          code: 'VALIDATION_ERROR',
+          fields,
+          message: flat,
+        });
+      },
     }),
   );
 

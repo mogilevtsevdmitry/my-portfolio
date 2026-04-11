@@ -24,12 +24,35 @@ const dmSans = DM_Sans({
   display: 'swap',
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://webmogilevtsev.ru';
+const DEFAULT_TITLE = 'Dmitry Mogilevtsev — Fullstack Engineer & AI Product Architect';
+const DEFAULT_DESCRIPTION =
+  'Fullstack engineer and AI product architect. From landing pages and marketing sites to complex SaaS with AI agents. React, Next.js, NestJS, and scalable architecture.';
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://webmogilevtsev.ru'),
+  metadataBase: new URL(SITE_URL),
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
   icons: {
     icon: '/logo.png',
     shortcut: '/logo.png',
     apple: '/logo.png',
+  },
+  // Root-level defaults so scrapers that hit the bare domain (before
+  // next-intl redirects them to /ru or /en) still get a valid preview.
+  // next/og auto-resolves `opengraph-image.tsx` alongside this layout.
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    siteName: 'Dmitry Mogilevtsev',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    creator: '@mogilevtsevdmitry',
   },
 };
 

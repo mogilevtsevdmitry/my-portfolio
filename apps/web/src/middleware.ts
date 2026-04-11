@@ -9,6 +9,9 @@ export default createMiddleware({
 
 export const config = {
   matcher: [
-    '/((?!_next|_vercel|api|favicon.ico|icon.png|og-default.png|.*\\..*).*)',
+    // Skip Next internals, assets, and the root-level metadata routes
+    // (opengraph-image / twitter-image / icon / robots / sitemap), so scrapers
+    // that fetch them on the bare domain don't get redirected into /ru.
+    '/((?!_next|_vercel|api|favicon.ico|icon.png|og-default.png|opengraph-image|twitter-image|icon|robots.txt|sitemap.xml|.*\\..*).*)',
   ],
 };

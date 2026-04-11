@@ -19,6 +19,8 @@ export function ContactForm() {
   const [captcha, setCaptcha] = useState({ token: '', answer: '' });
   const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [errorFields, setErrorFields] = useState<string[]>([]);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -34,6 +36,8 @@ export function ContactForm() {
     e.preventDefault();
     setStatus('loading');
     setErrorCode(null);
+    setErrorFields([]);
+    setErrorMessages([]);
     try {
       await submitContact({
         ...form,
@@ -49,6 +53,8 @@ export function ContactForm() {
       setStatus('error');
       if (err instanceof ContactSubmitError) {
         setErrorCode(err.code ?? 'UNKNOWN');
+        setErrorFields(err.fields);
+        setErrorMessages(err.messages);
       } else {
         setErrorCode('UNKNOWN');
       }
@@ -58,8 +64,15 @@ export function ContactForm() {
   };
 
   // Pick a localized message for the server-side error code.
-  const resolveErrorMessage = (code: string | null): string => {
-    if (code === 'CAPTCHA_INVALID') return t('form.errorCaptcha');
+  const resolveErrorMessage = (): string => {
+    if (errorCode === 'CAPTCHA_INVALID') return t('form.errorCaptcha');
+    if (errorCode === 'VALIDATION_ERROR') {
+      // CONTACT_FORMAT is the only field-specific message we localize for now.
+      if (errorMessages.some((m) => m === 'CONTACT_FORMAT') || errorFields.includes('contact')) {
+        return t('form.errorContactFormat');
+      }
+      return t('form.errorValidation');
+    }
     return t('form.error');
   };
   const isCaptchaError = errorCode === 'CAPTCHA_INVALID';
@@ -143,12 +156,12 @@ export function ContactForm() {
               placeholder={t('form.captchaPlaceholder')}
               onChange={handleCaptchaChange}
               resetKey={captchaResetKey}
-              error={status === 'error' && isCaptchaError ? resolveErrorMessage(errorCode) : null}
+              error={status === 'error' && isCaptchaError ? resolveErrorMessage() : null}
             />
 
             {status === 'error' && !isCaptchaError && (
               <p className="text-sm" style={{ color: '#f87171' }}>
-                {resolveErrorMessage(errorCode)}
+                {resolveErrorMessage()}
               </p>
             )}
 
