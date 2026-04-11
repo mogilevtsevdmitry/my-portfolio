@@ -1,0 +1,13 @@
+name = "tg-relay"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# No custom routes required — Cloudflare auto-assigns
+# https://tg-relay.<your-subdomain>.workers.dev
+
+# Workers request limits (free tier):
+#   - 100,000 requests/day
+#   - 10ms CPU time / request (plenty for a transparent proxy)
+
+[observability]
+enabled = true
