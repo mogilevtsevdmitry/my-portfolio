@@ -1,9 +1,12 @@
 import { ImageResponse } from 'next/og';
 import { getTranslations } from 'next-intl/server';
+import { loadOgPhotoDataUrl } from '@/lib/og-photo';
 
 export const alt = 'Dmitry Mogilevtsev — Fullstack Engineer & AI Product Architect';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+
+const photoDataUrl = loadOgPhotoDataUrl();
 
 export default async function Image({
   params: { locale },
@@ -23,12 +26,13 @@ export default async function Image({
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '80px',
-          // Dark base + two soft gold ambient glows, matching the site's Aurora.
+          // Two columns: text on the left, portrait on the right.
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: '70px 80px',
           // Satori (the engine behind @vercel/og) doesn't parse the mixed
-          // `background:` shorthand — split into backgroundColor + backgroundImage.
+          // `background:` shorthand — split color and gradients into their own
+          // longhand properties.
           backgroundColor: '#09090A',
           backgroundImage:
             'radial-gradient(circle at 85% 20%, rgba(201,168,76,0.25), transparent 60%), ' +
@@ -37,100 +41,150 @@ export default async function Image({
           position: 'relative',
         }}
       >
-        {/* Top bar: label */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            marginBottom: 36,
-          }}
-        >
-          <div
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: '#C9A84C',
-              boxShadow: '0 0 14px #C9A84C',
-            }}
-          />
-          <div
-            style={{
-              color: '#C9A84C',
-              fontSize: 20,
-              letterSpacing: 4,
-              textTransform: 'uppercase',
-              fontWeight: 700,
-            }}
-          >
-            {label}
-          </div>
-        </div>
-
-        {/* Name — serif-style via heavy weight */}
+        {/* ────────── Left column: text ────────── */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            marginBottom: 32,
+            justifyContent: 'center',
+            flex: 1,
+            paddingRight: 40,
           }}
         >
           <div
             style={{
-              color: '#F5EFE2',
-              fontSize: 130,
-              fontWeight: 300,
-              lineHeight: 1,
-              letterSpacing: -2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              marginBottom: 28,
             }}
           >
-            {firstName}
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 999,
+                background: '#C9A84C',
+                boxShadow: '0 0 14px #C9A84C',
+              }}
+            />
+            <div
+              style={{
+                color: '#C9A84C',
+                fontSize: 18,
+                letterSpacing: 4,
+                textTransform: 'uppercase',
+                fontWeight: 700,
+              }}
+            >
+              {label}
+            </div>
           </div>
+
           <div
             style={{
-              color: '#E4C87A',
-              fontSize: 130,
-              fontWeight: 300,
-              lineHeight: 1,
-              letterSpacing: -2,
-              marginTop: 6,
+              display: 'flex',
+              flexDirection: 'column',
+              marginBottom: 24,
             }}
           >
-            {lastName}
+            <div
+              style={{
+                color: '#F5EFE2',
+                fontSize: 104,
+                fontWeight: 300,
+                lineHeight: 1,
+                letterSpacing: -2,
+              }}
+            >
+              {firstName}
+            </div>
+            <div
+              style={{
+                color: '#E4C87A',
+                fontSize: 104,
+                fontWeight: 300,
+                lineHeight: 1,
+                letterSpacing: -2,
+                marginTop: 6,
+              }}
+            >
+              {lastName}
+            </div>
+          </div>
+
+          <div
+            style={{
+              height: 2,
+              width: 180,
+              background: 'linear-gradient(90deg, #C9A84C 0%, transparent 100%)',
+              marginBottom: 20,
+            }}
+          />
+
+          <div
+            style={{
+              color: '#B5A88A',
+              fontSize: 26,
+              letterSpacing: 2,
+              fontWeight: 600,
+            }}
+          >
+            {specializationLine}
           </div>
         </div>
 
-        {/* Gold divider */}
+        {/* ────────── Right column: portrait ────────── */}
         <div
           style={{
-            height: 2,
-            width: 220,
-            background: 'linear-gradient(90deg, #C9A84C 0%, transparent 100%)',
-            marginBottom: 24,
-          }}
-        />
-
-        {/* Specialization line */}
-        <div
-          style={{
-            color: '#B5A88A',
-            fontSize: 30,
-            letterSpacing: 2,
-            fontWeight: 600,
+            display: 'flex',
+            position: 'relative',
+            width: 340,
+            height: 490,
+            flexShrink: 0,
           }}
         >
-          {specializationLine}
+          <div
+            style={{
+              position: 'absolute',
+              inset: -12,
+              border: '1px solid rgba(201, 168, 76, 0.28)',
+              borderRadius: 24,
+            }}
+          />
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              borderRadius: 20,
+              overflow: 'hidden',
+              border: '1px solid rgba(201, 168, 76, 0.15)',
+              position: 'relative',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photoDataUrl}
+              alt=""
+              width={340}
+              height={490}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
         </div>
 
-        {/* Bottom-right: site URL */}
         <div
           style={{
             position: 'absolute',
-            right: 80,
-            bottom: 60,
+            left: 80,
+            bottom: 50,
             color: '#7C7060',
-            fontSize: 20,
+            fontSize: 18,
             letterSpacing: 3,
             textTransform: 'uppercase',
             fontWeight: 600,
