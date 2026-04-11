@@ -1,4 +1,9 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+// Strip trailing slash so downstream paths like `/contacts/captcha` never
+// produce a double slash (`//`), which some proxies/CORS configs reject.
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001').replace(
+  /\/+$/,
+  '',
+);
 
 export interface ContactPayload {
   name: string;
