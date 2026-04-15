@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { Section } from '@/components/ui/Section';
 import { GlowText } from '@/components/ui/GlowText';
 import { Card } from '@/components/ui/Card';
@@ -35,31 +36,28 @@ async function fetchPosts(locale: string): Promise<BlogPost[]> {
 export async function generateMetadata({
   params: { locale },
 }: { params: { locale: string } }): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'blog' });
   return {
-    title: locale === 'ru' ? 'Блог' : 'Blog',
-    description:
-      locale === 'ru'
-        ? 'Статьи об AI и архитектуре систем'
-        : 'Articles about AI and system architecture',
+    title: t('title'),
+    description: t('description'),
   };
 }
 
 export default async function BlogListPage({
   params: { locale },
 }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'blog' });
   const posts = await fetchPosts(locale);
 
   return (
     <Section className="pt-24">
       <GlowText as="h1" className="text-3xl md:text-5xl font-bold mb-12">
-        {locale === 'ru' ? 'Блог' : 'Blog'}
+        {t('title')}
       </GlowText>
 
       {posts.length === 0 ? (
         <div className="glass-card p-12 text-center">
-          <p className="text-[var(--text-muted)]">
-            {locale === 'ru' ? 'Скоро здесь появятся статьи' : 'Articles coming soon'}
-          </p>
+          <p className="text-[var(--text-muted)]">{t('empty')}</p>
         </div>
       ) : (
         <div className="space-y-6">

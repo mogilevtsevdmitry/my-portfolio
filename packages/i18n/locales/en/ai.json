@@ -1,0 +1,12 @@
+{
+  "title": "AI Agents & Automation",
+  "subtitle": "I build systems where AI doesn't just answer questions — it does the work",
+  "capabilities": [
+    { "key": "llm",        "icon": "🧠", "title": "LLM Integration",     "desc": "GPT-4, Claude, Gemini — I pick the model that fits the task" },
+    { "key": "pipeline",   "icon": "🔄", "title": "AI Pipelines",        "desc": "Multi-step processes with branching and conditions" },
+    { "key": "multi",      "icon": "🤝", "title": "Multi-agent systems", "desc": "Orchestration of agent teams for complex tasks" },
+    { "key": "rag",        "icon": "🔌", "title": "RAG & knowledge bases", "desc": "Vector search plus contextual agent memory" },
+    { "key": "automation", "icon": "⚡", "title": "Process automation",  "desc": "Replacing manual processes with AI workflows" },
+    { "key": "monitor",    "icon": "📊", "title": "Agent monitoring",    "desc": "Tracking decisions, costs, and answer quality" }
+  ]
+}

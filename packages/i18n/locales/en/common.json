@@ -17,5 +17,26 @@
   "lang": {
     "ru": "RU",
     "en": "EN"
+  },
+  "sections": {
+    "about": "01. About",
+    "values": "02. How I Help",
+    "ai": "03. AI Agents",
+    "projects": "04. Projects",
+    "tech": "05. Tech Stack",
+    "process": "06. Process",
+    "contacts": "07. Contact"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "home": "Go home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  },
+  "captcha": {
+    "refresh": "Refresh challenge",
+    "loadError": "Failed to load challenge. Try refreshing."
   }
 }

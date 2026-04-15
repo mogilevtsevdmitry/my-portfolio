@@ -26,11 +26,8 @@ function groupByCategory(projects: WebProject[]): CategoryGroup[] {
   return Array.from(map.entries()).map(([category, items]) => ({ category, projects: items }));
 }
 
-function projectCountLabel(count: number, locale: string): string {
-  if (locale === 'ru') {
-    return count === 1 ? 'проект' : 'проекта';
-  }
-  return count === 1 ? 'project' : 'projects';
+function projectCountLabel(count: number, t: (key: string) => string): string {
+  return count === 1 ? t('countOne') : t('countMany');
 }
 
 // ---------------------------------------------------------------------------
@@ -230,7 +227,7 @@ export default async function ProjectsPage({ params: { locale } }: ProjectsPageP
       {categoryGroups.length === 0 ? (
         <section style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
           <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '4rem 0' }}>
-            Проекты скоро появятся
+            {t('empty')}
           </p>
         </section>
       ) : (
@@ -263,7 +260,7 @@ export default async function ProjectsPage({ params: { locale } }: ProjectsPageP
                   whiteSpace: 'nowrap',
                 }}
               >
-                {projects.length} {projectCountLabel(projects.length, locale)}
+                {projects.length} {projectCountLabel(projects.length, t)}
               </span>
             </div>
 

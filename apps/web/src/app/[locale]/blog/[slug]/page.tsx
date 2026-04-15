@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { Section } from '@/components/ui/Section';
 import { GlowText } from '@/components/ui/GlowText';
 import { Link } from '@/navigation';
@@ -56,6 +57,8 @@ export default async function BlogPostPage({
   const translation = post.translations[0];
   if (!translation) notFound();
 
+  const t = await getTranslations({ locale, namespace: 'blog' });
+
   return (
     <>
       <BlogAnalytics slug={slug} />
@@ -64,7 +67,7 @@ export default async function BlogPostPage({
           href="/blog"
           className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-accent transition-colors mb-8 text-sm"
         >
-          ← {locale === 'ru' ? 'Назад к блогу' : 'Back to blog'}
+          ← {t('back')}
         </Link>
 
         <GlowText as="h1" className="text-3xl md:text-5xl font-bold mb-4">

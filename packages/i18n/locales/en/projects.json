@@ -8,6 +8,10 @@
   "allProjectsBtn": "All Projects →",
   "openProject": "Open Project",
   "details": "Details",
+  "empty": "Projects coming soon",
+  "sourceCode": "Source code",
+  "countOne": "project",
+  "countMany": "projects",
   "sections": {
     "description": "Description",
     "problem": "Problem",

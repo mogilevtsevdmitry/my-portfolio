@@ -3,16 +3,16 @@
 import { useTranslations } from 'next-intl';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const stats = [
-  { num: '5+',  label: 'лет в разработке' },
-  { num: '20+', label: 'запущенных проектов' },
-  { num: '10+', label: 'AI-агентов в проде' },
-  { num: '60%', label: 'экономия операционных затрат' },
-];
+interface Stat {
+  num: string;
+  label: string;
+}
 
 export function About() {
   const t = useTranslations('about');
+  const tCommon = useTranslations('common');
   const theses = t.raw('theses') as string[];
+  const stats = t.raw('stats') as Stat[];
 
   const { ref: titleRef, isVisible: titleVisible } = useScrollReveal();
   const { ref: contentRef, isVisible: contentVisible } = useScrollReveal({ rootMargin: '0px 0px -40px 0px' });
@@ -38,7 +38,7 @@ export function About() {
           ref={titleRef}
           className={`reveal ${titleVisible ? 'is-visible' : ''} mb-14`}
         >
-          <span className="section-eyebrow">01. О Себе</span>
+          <span className="section-eyebrow">{tCommon('sections.about')}</span>
           <hr className="gold-divider mt-3 mb-0" style={{ width: '3rem' }} />
         </div>
 
@@ -63,15 +63,15 @@ export function About() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <span style={{ color: 'var(--accent)', fontSize: '0.7rem', fontFamily: 'var(--font-syne)', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                  Предприниматель
+                  {t('entrepreneur.tagEntrepreneur')}
                 </span>
                 <span style={{ color: 'var(--border-hover)' }}>·</span>
                 <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', fontFamily: 'var(--font-syne)', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                  Разработчик
+                  {t('entrepreneur.tagDeveloper')}
                 </span>
               </div>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-dm-sans)' }}>
-                Смотрю на технологии через призму бизнеса. Каждое архитектурное решение — это инвестиция с ожидаемым ROI, а не самоцель.
+                {t('entrepreneur.text')}
               </p>
             </div>
 

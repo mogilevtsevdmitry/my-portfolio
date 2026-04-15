@@ -12,6 +12,7 @@ interface ProjectsProps {
 
 export function Projects({ projects }: ProjectsProps) {
   const t = useTranslations('projects');
+  const tCommon = useTranslations('common');
   const { ref, isVisible } = useScrollReveal();
 
   return (
@@ -29,7 +30,7 @@ export function Projects({ projects }: ProjectsProps) {
 
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">04. Проекты</span>
+          <span className="section-eyebrow">{tCommon('sections.projects')}</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 
@@ -49,7 +50,7 @@ export function Projects({ projects }: ProjectsProps) {
         </div>
 
         {projects.length === 0 ? (
-          <p className="text-[var(--text-muted)] text-center py-16">Проекты скоро появятся</p>
+          <p className="text-[var(--text-muted)] text-center py-16">{t('empty')}</p>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {projects.map((project, i) => (

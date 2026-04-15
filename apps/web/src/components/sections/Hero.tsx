@@ -61,7 +61,7 @@ export function Hero() {
             <h1 className="font-display font-light leading-none mb-0" style={{ letterSpacing: '-0.02em' }}>
               <SplitText
                 as="span"
-                text={t('firstName') || 'Дмитрий'}
+                text={t('firstName')}
                 className="block"
                 style={{ fontSize: 'clamp(3.2rem, 7.5vw, 7.2rem)', color: 'var(--text-primary)' }}
                 delay={200}
@@ -71,7 +71,7 @@ export function Hero() {
               />
               <SplitText
                 as="span"
-                text={t('lastName') || 'Могилевцев'}
+                text={t('lastName')}
                 className="block pl-[4%] md:pl-[6%]"
                 style={{ fontSize: 'clamp(3.2rem, 7.5vw, 7.2rem)' }}
                 charStyle={{
@@ -213,7 +213,7 @@ export function Hero() {
                 >
                   <Image
                     src="/photo.png"
-                    alt="Дмитрий Могилевцев"
+                    alt={t('name')}
                     fill
                     priority
                     className="object-cover object-top"

@@ -14,6 +14,10 @@ interface MathCaptchaProps {
   error?: string | null;
   /** Bumping this key forces a reload of the challenge (e.g. after server rejection). */
   resetKey?: number;
+  /** Localized label for the refresh button (aria + title). */
+  refreshLabel: string;
+  /** Localized message shown when the challenge failed to load. */
+  loadErrorMessage: string;
 }
 
 export function MathCaptcha({
@@ -22,6 +26,8 @@ export function MathCaptcha({
   onChange,
   error,
   resetKey = 0,
+  refreshLabel,
+  loadErrorMessage,
 }: MathCaptchaProps) {
   const [challenge, setChallenge] = useState<CaptchaChallenge | null>(null);
   const [answer, setAnswer] = useState('');
@@ -110,8 +116,8 @@ export function MathCaptcha({
             (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
             (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
           }}
-          aria-label="Обновить проверку"
-          title="Обновить проверку"
+          aria-label={refreshLabel}
+          title={refreshLabel}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="23 4 23 10 17 10" />
@@ -124,9 +130,7 @@ export function MathCaptcha({
           className="text-xs mt-2"
           style={{ color: '#f87171', fontFamily: 'var(--font-dm-sans)' }}
         >
-          {loadError
-            ? 'Не удалось загрузить проверку. Попробуйте обновить.'
-            : error}
+          {loadError ? loadErrorMessage : error}
         </p>
       )}
     </div>

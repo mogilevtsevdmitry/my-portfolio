@@ -8,6 +8,10 @@
   "allProjectsBtn": "Все проекты →",
   "openProject": "Открыть проект",
   "details": "Подробнее",
+  "empty": "Проекты скоро появятся",
+  "sourceCode": "Исходный код",
+  "countOne": "проект",
+  "countMany": "проекта",
   "sections": {
     "description": "Описание",
     "problem": "Проблема",

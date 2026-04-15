@@ -17,9 +17,18 @@ const groupIcons: Record<string, string> = {
   frontend: '◆', backend: '◈', architecture: '◇', infrastructure: '◉', ai: '◎', tools: '◐',
 };
 
+// Marquee needs each "copy" to be wider than the viewport, otherwise -50% translate
+// leaves a visible gap before the second copy wraps around. Repeating the phrase a
+// few times per copy guarantees seamless scrolling on any screen width.
+const MARQUEE_REPEATS_PER_COPY = 4;
+
 export function TechStack() {
   const t = useTranslations('tech');
+  const tCommon = useTranslations('common');
   const { ref, isVisible } = useScrollReveal();
+
+  const marquee = t('marquee');
+  const singleCopy = Array(MARQUEE_REPEATS_PER_COPY).fill(marquee).join(' · ') + ' · ';
 
   return (
     <section
@@ -27,12 +36,22 @@ export function TechStack() {
       className="relative py-24 md:py-32 px-6 md:px-16 lg:px-24 overflow-hidden"
       style={{ background: 'var(--bg-secondary)' }}
     >
-      {/* Marquee ticker at top */}
+      {/* Marquee ticker at top — two identical copies for a seamless -50% loop */}
       <div className="overflow-hidden mb-16 opacity-20 select-none" aria-hidden>
-        <div className="ticker-track whitespace-nowrap">
-          {['AI · Backend · SaaS · DevOps · Architecture · DDD · Kubernetes · NestJS · LLM · Microservices · ', 'AI · Backend · SaaS · DevOps · Architecture · DDD · Kubernetes · NestJS · LLM · Microservices · '].map((text, i) => (
-            <span key={i} className="inline-block px-4" style={{ fontFamily: 'var(--font-syne)', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)' }}>
-              {text}
+        <div className="ticker-track">
+          {[0, 1].map((i) => (
+            <span
+              key={i}
+              className="inline-block px-4"
+              style={{
+                fontFamily: 'var(--font-syne)',
+                fontSize: '0.65rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: 'var(--accent)',
+              }}
+            >
+              {singleCopy}
             </span>
           ))}
         </div>
@@ -40,7 +59,7 @@ export function TechStack() {
 
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">05. Технологии</span>
+          <span className="section-eyebrow">{tCommon('sections.tech')}</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 

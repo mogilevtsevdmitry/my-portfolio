@@ -42,7 +42,7 @@ export default async function ProjectPage({ params: { locale, slug } }: Props) {
         href="/projects"
         className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-accent transition-colors mb-8 text-sm"
       >
-        ← {locale === 'ru' ? 'Все проекты' : 'All projects'}
+        ← {t('allProjects')}
       </Link>
 
       {/* Preview */}
@@ -119,7 +119,7 @@ export default async function ProjectPage({ params: { locale, slug } }: Props) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-accent transition-colors"
           >
-            {locale === 'ru' ? 'Исходный код' : 'Source code'} ↗
+            {t('sourceCode')} ↗
           </a>
         )}
       </div>

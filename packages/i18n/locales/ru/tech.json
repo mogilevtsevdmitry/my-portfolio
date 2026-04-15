@@ -1,6 +1,7 @@
 {
   "title": "Технологии",
   "subtitle": "Полный стек от UI до инфраструктуры",
+  "marquee": "AI · Backend · SaaS · DevOps · Architecture · DDD · Kubernetes · NestJS · LLM · Microservices",
   "groups": {
     "frontend": "Frontend",
     "backend": "Backend",

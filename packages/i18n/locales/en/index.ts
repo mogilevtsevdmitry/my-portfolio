@@ -6,6 +6,8 @@ import projects from './projects.json';
 import tech from './tech.json';
 import process from './process.json';
 import contacts from './contacts.json';
+import ai from './ai.json';
+import blog from './blog.json';
 
-const messages = { common, hero, about, values, projects, tech, process, contacts };
+const messages = { common, hero, about, values, projects, tech, process, contacts, ai, blog };
 export default messages;

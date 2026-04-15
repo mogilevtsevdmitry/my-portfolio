@@ -1,5 +1,10 @@
 {
   "title": "What I Do",
+  "entrepreneur": {
+    "tagEntrepreneur": "Entrepreneur",
+    "tagDeveloper": "Developer",
+    "text": "I look at technology through a business lens. Every architectural decision is an investment with expected ROI, not an end in itself."
+  },
   "theses": [
     "Build AI ecosystems and agent orchestrators",
     "Work with DDD, microservices, and event-driven architecture",
@@ -7,5 +12,11 @@
     "Design scalable systems: multi-tenant, high-load",
     "Focus on ROI, not code",
     "Experience: backend + fullstack + product development"
+  ],
+  "stats": [
+    { "num": "5+",  "label": "years in development" },
+    { "num": "20+", "label": "launched projects" },
+    { "num": "10+", "label": "AI agents in production" },
+    { "num": "60%", "label": "operating cost savings" }
   ]
 }

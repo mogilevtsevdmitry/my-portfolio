@@ -4,6 +4,7 @@ import { GlowText } from '@/components/ui/GlowText';
 
 export function WorkProcess() {
   const t = useTranslations('process');
+  const tCommon = useTranslations('common');
   const steps = t.raw('steps') as Array<{
     number: string;
     title: string;
@@ -13,7 +14,7 @@ export function WorkProcess() {
   return (
     <Section id="process" alt>
       <div className="mb-14">
-        <span className="section-eyebrow">06. Процесс</span>
+        <span className="section-eyebrow">{tCommon('sections.process')}</span>
         <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
       </div>
       <GlowText as="h2" className="text-3xl md:text-4xl font-bold text-center mb-12">

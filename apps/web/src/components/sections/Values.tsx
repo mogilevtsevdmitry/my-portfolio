@@ -17,6 +17,7 @@ const icons: Record<string, string> = {
 
 export function Values() {
   const t = useTranslations('values');
+  const tCommon = useTranslations('common');
   const cards = t.raw('cards') as ValueCard[];
   const { ref, isVisible } = useScrollReveal();
 
@@ -25,7 +26,7 @@ export function Values() {
       style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-[1400px] mx-auto">
         <div ref={ref} className={`reveal ${isVisible ? 'is-visible' : ''} mb-14`}>
-          <span className="section-eyebrow">02. Чем я полезен</span>
+          <span className="section-eyebrow">{tCommon('sections.values')}</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
         </div>
 

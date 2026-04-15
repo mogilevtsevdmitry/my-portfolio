@@ -12,6 +12,7 @@ type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export function ContactForm() {
   const t = useTranslations('contacts');
+  const tCommon = useTranslations('common');
   const [status, setStatus] = useState<Status>('idle');
   const [form, setForm] = useState({ name: '', contact: '', description: '' });
   // Honeypot — hidden from real users, catches dumb bots.
@@ -81,7 +82,7 @@ export function ContactForm() {
     <Section id="contacts">
       <div className="max-w-2xl mx-auto">
         <div className="mb-12">
-          <span className="section-eyebrow">07. Контакты</span>
+          <span className="section-eyebrow">{tCommon('sections.contacts')}</span>
           <hr className="gold-divider mt-3" style={{ width: '3rem' }} />
           <h2
             className="font-display font-light leading-tight mt-8 mb-4"
@@ -157,6 +158,8 @@ export function ContactForm() {
               onChange={handleCaptchaChange}
               resetKey={captchaResetKey}
               error={status === 'error' && isCaptchaError ? resolveErrorMessage() : null}
+              refreshLabel={tCommon('captcha.refresh')}
+              loadErrorMessage={tCommon('captcha.loadError')}
             />
 
             {status === 'error' && !isCaptchaError && (
