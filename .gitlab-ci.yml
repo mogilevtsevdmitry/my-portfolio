@@ -1,70 +1,77 @@
 # Билд + push трёх образов monorepo my-portfolio в внутренний GitLab Container
-# Registry. Запускается на каждый push в main. Образы тегаются $CI_COMMIT_SHORT_SHA
-# и `latest`; tag используется в k8s/prod/webmogilevtsev/values.yaml.
+# Registry через kaniko. Запускается на каждый push в main.
 #
-# CI_REGISTRY_IMAGE = gitlab.xn--d1acaxq.xn--p1ai:5050/<group>/<project>
-# Соответственно итоговые теги получатся вида:
-#   <CI_REGISTRY_IMAGE>/api:<SHA>
-#   <CI_REGISTRY_IMAGE>/web:<SHA>
-#   <CI_REGISTRY_IMAGE>/admin:<SHA>
-# Если репо создан как gitlab.xn--d1acaxq.xn--p1ai/devops/my-portfolio — теги
-# совпадут с values.yaml. Если другой namespace — поправить chart accordingly.
+# Почему kaniko, а не docker-in-docker:
+# Наш GitLab Runner работает в Kubernetes-режиме (см. error log: "ContainersNotReady").
+# DinD требует /var/run/docker.sock или TCP-конфигурации DOCKER_HOST + TLS, что
+# хрупко настраивать. Kaniko — k8s-native: один контейнер, читает Dockerfile,
+# собирает OCI-образ и пушит в registry. Auth — через config.json в /kaniko/.docker/.
+#
+# CI_REGISTRY_IMAGE = gitlab.xn--d1acaxq.xn--p1ai:5050/devops/my-portfolio
+# Образы: <CI_REGISTRY_IMAGE>/{api,web,admin}:<SHA> + :latest
 
 stages:
   - build
 
-variables:
-  DOCKER_TLS_CERTDIR: "/certs"
-  # Чтобы buildx использовал кэш слоёв между ранами одного образа.
-  DOCKER_BUILDKIT: "1"
-
-.docker-build:
+.kaniko-build:
   stage: build
-  image: docker:27
-  services:
-    - docker:27-dind
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]
   before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-  # Запускаем только на main и при ручном triger'е. Feature-ветки билдить не нужно.
+    # Kaniko читает /kaniko/.docker/config.json для авторизации в registry.
+    # CI_REGISTRY_USER + CI_REGISTRY_PASSWORD автоматически инжектятся GitLab'ом
+    # (это short-lived job-token для CI_REGISTRY).
+    - mkdir -p /kaniko/.docker
+    - |
+      cat > /kaniko/.docker/config.json <<EOF
+      {
+        "auths": {
+          "${CI_REGISTRY}": {
+            "auth": "$(printf '%s' "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')"
+          }
+        }
+      }
+      EOF
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
 build:api:
-  extends: .docker-build
+  extends: .kaniko-build
   script:
     - >
-      docker build
-      --file apps/api/Dockerfile
-      --tag $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHORT_SHA
-      --tag $CI_REGISTRY_IMAGE/api:latest
-      .
-    - docker push $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE/api:latest
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/apps/api/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}"
+      --destination "${CI_REGISTRY_IMAGE}/api:latest"
+      --cache=true
+      --cache-repo "${CI_REGISTRY_IMAGE}/api/cache"
 
 build:web:
-  extends: .docker-build
+  extends: .kaniko-build
   script:
     - >
-      docker build
-      --file apps/web/Dockerfile
-      --tag $CI_REGISTRY_IMAGE/web:$CI_COMMIT_SHORT_SHA
-      --tag $CI_REGISTRY_IMAGE/web:latest
-      .
-    - docker push $CI_REGISTRY_IMAGE/web:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE/web:latest
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/apps/web/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/web:${CI_COMMIT_SHORT_SHA}"
+      --destination "${CI_REGISTRY_IMAGE}/web:latest"
+      --cache=true
+      --cache-repo "${CI_REGISTRY_IMAGE}/web/cache"
 
 build:admin:
-  extends: .docker-build
+  extends: .kaniko-build
   script:
     # VITE_API_URL запекается в JS-бандл при сборке (Vite ARG → ENV).
     # При смене публичного API URL — пересобрать admin с новым build-arg.
     - >
-      docker build
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/apps/admin/Dockerfile"
       --build-arg VITE_API_URL=https://api.webmogilevtsev.ru
-      --file apps/admin/Dockerfile
-      --tag $CI_REGISTRY_IMAGE/admin:$CI_COMMIT_SHORT_SHA
-      --tag $CI_REGISTRY_IMAGE/admin:latest
-      .
-    - docker push $CI_REGISTRY_IMAGE/admin:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE/admin:latest
+      --destination "${CI_REGISTRY_IMAGE}/admin:${CI_COMMIT_SHORT_SHA}"
+      --destination "${CI_REGISTRY_IMAGE}/admin:latest"
+      --cache=true
+      --cache-repo "${CI_REGISTRY_IMAGE}/admin/cache"
