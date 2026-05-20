@@ -14,6 +14,10 @@ WORKDIR /app
 COPY --from=deps /app/ ./
 # Overlay with actual source code
 COPY . .
+# Prisma 7 prisma.config.ts ссылается на env('DATABASE_URL') — даже для generate
+# (которому реальная БД не нужна, только URL для парсинга). При билде задаём
+# плейсхолдер, в рантайме перетирается реальной DATABASE_URL из Vault.
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public"
 RUN cd apps/api && pnpm exec prisma generate
 RUN cd apps/api && pnpm exec nest build
 
