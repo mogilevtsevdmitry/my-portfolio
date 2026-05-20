@@ -1,0 +1,70 @@
+# Билд + push трёх образов monorepo my-portfolio в внутренний GitLab Container
+# Registry. Запускается на каждый push в main. Образы тегаются $CI_COMMIT_SHORT_SHA
+# и `latest`; tag используется в k8s/prod/webmogilevtsev/values.yaml.
+#
+# CI_REGISTRY_IMAGE = gitlab.xn--d1acaxq.xn--p1ai:5050/<group>/<project>
+# Соответственно итоговые теги получатся вида:
+#   <CI_REGISTRY_IMAGE>/api:<SHA>
+#   <CI_REGISTRY_IMAGE>/web:<SHA>
+#   <CI_REGISTRY_IMAGE>/admin:<SHA>
+# Если репо создан как gitlab.xn--d1acaxq.xn--p1ai/devops/my-portfolio — теги
+# совпадут с values.yaml. Если другой namespace — поправить chart accordingly.
+
+stages:
+  - build
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  # Чтобы buildx использовал кэш слоёв между ранами одного образа.
+  DOCKER_BUILDKIT: "1"
+
+.docker-build:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  # Запускаем только на main и при ручном triger'е. Feature-ветки билдить не нужно.
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+build:api:
+  extends: .docker-build
+  script:
+    - >
+      docker build
+      --file apps/api/Dockerfile
+      --tag $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHORT_SHA
+      --tag $CI_REGISTRY_IMAGE/api:latest
+      .
+    - docker push $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/api:latest
+
+build:web:
+  extends: .docker-build
+  script:
+    - >
+      docker build
+      --file apps/web/Dockerfile
+      --tag $CI_REGISTRY_IMAGE/web:$CI_COMMIT_SHORT_SHA
+      --tag $CI_REGISTRY_IMAGE/web:latest
+      .
+    - docker push $CI_REGISTRY_IMAGE/web:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/web:latest
+
+build:admin:
+  extends: .docker-build
+  script:
+    # VITE_API_URL запекается в JS-бандл при сборке (Vite ARG → ENV).
+    # При смене публичного API URL — пересобрать admin с новым build-arg.
+    - >
+      docker build
+      --build-arg VITE_API_URL=https://api.webmogilevtsev.ru
+      --file apps/admin/Dockerfile
+      --tag $CI_REGISTRY_IMAGE/admin:$CI_COMMIT_SHORT_SHA
+      --tag $CI_REGISTRY_IMAGE/admin:latest
+      .
+    - docker push $CI_REGISTRY_IMAGE/admin:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/admin:latest
