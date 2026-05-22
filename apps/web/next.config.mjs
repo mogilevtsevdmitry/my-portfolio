@@ -13,6 +13,12 @@ const nextConfig = {
         hostname: 'localhost',
         port: '9000',
       },
+      {
+        // Timeweb Cloud S3 — bucket для превью проектов/блога (prod).
+        protocol: 'https',
+        hostname: 's3.twcstorage.ru',
+        pathname: '/webmogilevtsev/**',
+      },
     ],
   },
   experimental: {
