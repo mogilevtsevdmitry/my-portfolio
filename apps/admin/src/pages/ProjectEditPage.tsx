@@ -103,7 +103,11 @@ export function ProjectEditPage() {
       const payload = {
         slug: data.slug,
         status: data.status,
-        category: data.category || null,
+        // category — non-nullable String с @default("") в Prisma-схеме.
+        // Prisma 7 валидирует null до применения SQL DEFAULT и падает с
+        // «Argument 'category' must not be null». Поэтому пустую строку
+        // не превращаем в null (в отличие от соседних optional-полей).
+        category: data.category || '',
         technologies: data.technologies
           ? data.technologies.split(',').map((t) => t.trim()).filter(Boolean)
           : [],
