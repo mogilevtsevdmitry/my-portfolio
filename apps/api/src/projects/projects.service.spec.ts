@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ProjectsService } from './projects.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -58,6 +59,12 @@ describe('ProjectsService', () => {
               upsert: jest.fn(),
             },
           },
+        },
+        {
+          // ConfigService used by triggerRevalidation(); returning undefined
+          // for REVALIDATION_SECRET makes the hook a no-op in unit tests.
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue(undefined) },
         },
       ],
     }).compile();

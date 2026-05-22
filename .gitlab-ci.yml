@@ -52,10 +52,14 @@ build:api:
 build:web:
   extends: .kaniko-build
   script:
+    # NEXT_PUBLIC_* запекаются в client-бандл при `next build`. Без них fetch
+    # клиентских компонентов (captcha, contact form) уходит на localhost:3001.
     - >
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/apps/web/Dockerfile"
+      --build-arg NEXT_PUBLIC_API_URL=https://api.webmogilevtsev.ru
+      --build-arg NEXT_PUBLIC_SITE_URL=https://webmogilevtsev.ru
       --destination "${CI_REGISTRY_IMAGE}/web:${CI_COMMIT_SHORT_SHA}"
       --destination "${CI_REGISTRY_IMAGE}/web:latest"
       --cache=true

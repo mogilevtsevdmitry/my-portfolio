@@ -17,6 +17,13 @@ COPY --from=deps /app/ ./
 # Overlay with actual source code
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# NEXT_PUBLIC_* запекается в client-бандл на этапе билда. Без этого все client-side
+# fetch (captcha, contact form, analytics) падают на default 'http://localhost:3001'
+# и ловят CORS на проде. ARG переопределяется в CI через --build-arg.
+ARG NEXT_PUBLIC_API_URL=http://localhost:3001
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ARG NEXT_PUBLIC_SITE_URL=http://localhost:3000
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 RUN cd apps/web && pnpm exec next build
 
 FROM node:20-alpine AS runner

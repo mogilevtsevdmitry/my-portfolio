@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ProjectStatus } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -6,7 +7,10 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private config: ConfigService,
+  ) {}
 
   async findAll() {
     return this.prisma.project.findMany({
@@ -43,7 +47,7 @@ export class ProjectsService {
 
   async create(dto: CreateProjectDto) {
     const { translations, ...data } = dto;
-    return this.prisma.project.create({
+    const project = await this.prisma.project.create({
       data: {
         ...data,
         status: data.status as ProjectStatus | undefined,
@@ -53,10 +57,13 @@ export class ProjectsService {
       },
       include: { translations: true },
     });
+
+    await this.revalidateProjectPaths(project.slug);
+    return project;
   }
 
   async update(id: string, dto: UpdateProjectDto) {
-    await this.findOne(id);
+    const existing = await this.findOne(id);
     const { translations, ...data } = dto;
 
     if (translations && translations.length > 0) {
@@ -71,7 +78,7 @@ export class ProjectsService {
       );
     }
 
-    return this.prisma.project.update({
+    const project = await this.prisma.project.update({
       where: { id },
       data: {
         ...data,
@@ -79,11 +86,47 @@ export class ProjectsService {
       },
       include: { translations: true },
     });
+
+    // Revalidate both the old slug (на случай переименования) и новый.
+    await this.revalidateProjectPaths(existing.slug);
+    if (project.slug !== existing.slug) {
+      await this.revalidateProjectPaths(project.slug);
+    }
+    return project;
   }
 
   async remove(id: string) {
-    await this.findOne(id);
+    const project = await this.findOne(id);
     await this.prisma.project.delete({ where: { id } });
+    await this.revalidateProjectPaths(project.slug);
     return { success: true };
+  }
+
+  /**
+   * Invalidate all Next.js cached pages that depend on the projects table.
+   * Главная (`/`) показывает превью-сетку, `/projects` — полный листинг,
+   * `/projects/{slug}` — детальную карточку.
+   */
+  private async revalidateProjectPaths(slug: string) {
+    await Promise.all([
+      this.triggerRevalidation('/'),
+      this.triggerRevalidation('/projects'),
+      this.triggerRevalidation(`/projects/${slug}`),
+    ]);
+  }
+
+  private async triggerRevalidation(path: string) {
+    const webUrl = this.config.get<string>('WEB_URL') ?? 'http://web:3000';
+    const secret = this.config.get<string>('REVALIDATION_SECRET');
+    if (!secret) return;
+
+    try {
+      await fetch(
+        `${webUrl}/api/revalidate?secret=${secret}&path=${encodeURIComponent(path)}`,
+        { method: 'POST' },
+      );
+    } catch {
+      console.warn(`Failed to trigger revalidation for ${path}`);
+    }
   }
 }
