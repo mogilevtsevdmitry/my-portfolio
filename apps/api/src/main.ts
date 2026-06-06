@@ -1,37 +1,38 @@
 import { NestFactory } from '@nestjs/core';
 import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationError } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
-
-/**
- * Build the list of allowed CORS origins from env. Supports either
- *   CORS_ORIGINS=https://a.com,https://b.com
- * or the historical WEB_URL / ADMIN_URL pair. Localhost dev ports are
- * always included so local dev doesn't require any env at all.
- */
-function buildAllowedOrigins(): string[] {
-  const fromList =
-    process.env.CORS_ORIGINS?.split(',')
-      .map((s) => s.trim().replace(/\/+$/, ''))
-      .filter(Boolean) ?? [];
-
-  const fromPair = [process.env.WEB_URL, process.env.ADMIN_URL]
-    .filter((s): s is string => !!s)
-    .map((s) => s.replace(/\/+$/, ''));
-
-  const defaults = [
-    'http://localhost:3000',
-    'http://localhost:3002',
-    'http://localhost:3004',
-  ];
-
-  return Array.from(new Set([...fromList, ...fromPair, ...defaults]));
-}
+import { AllExceptionsFilter } from './common/all-exceptions.filter';
+import { buildAllowedOrigins, normalizeOrigin } from './common/allowed-origins';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // SEC-012: disable Nest's implicit body parser so the explicitly size-limited
+  // parsers registered below (express.json/urlencoded with a 64kb cap) are the
+  // ones that actually parse the body. Without this, Nest's default parser runs
+  // first (~100kb) and the custom limit is a no-op.
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bodyParser: false,
+  });
   const logger = new Logger('Bootstrap');
+
+  // SEC-001: trust the first reverse-proxy hop so rate limiting (and any other
+  // IP-based logic) is keyed on the real client IP from X-Forwarded-For rather
+  // than the proxy's address.
+  app.set('trust proxy', 1);
+
+  // SEC-004: baseline security headers. This is a JSON API, so helmet's
+  // defaults are appropriate. helmet does NOT touch CORS, configured below.
+  app.use(helmet());
+
+  // SEC-012: cap request body size to mitigate memory-exhaustion DoS. 64kb is
+  // ample for our JSON payloads (contacts, analytics, admin CRUD). This
+  // replaces the implicit Nest body parser with an explicitly-limited one.
+  app.use(express.json({ limit: '64kb' }));
+  app.use(express.urlencoded({ extended: true, limit: '64kb' }));
 
   app.use(cookieParser());
 
@@ -57,6 +58,10 @@ async function bootstrap() {
     }),
   );
 
+  // SEC-024: sanitize uncaught 5xx errors in production (no stack/internal
+  // details leaked). 4xx (incl. the ValidationPipe shape) passes through.
+  app.useGlobalFilters(new AllExceptionsFilter());
+
   const allowedOrigins = buildAllowedOrigins();
   logger.log(`CORS allowed origins: ${allowedOrigins.join(', ')}`);
 
@@ -64,7 +69,7 @@ async function bootstrap() {
     origin: (origin, callback) => {
       // Allow non-browser requests (curl, server-to-server) where Origin is absent.
       if (!origin) return callback(null, true);
-      const normalized = origin.replace(/\/+$/, '');
+      const normalized = normalizeOrigin(origin);
       if (allowedOrigins.includes(normalized)) {
         return callback(null, true);
       }

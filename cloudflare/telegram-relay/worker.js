@@ -16,8 +16,13 @@
  * Security model:
  *   - Anyone who finds the worker URL can relay to Telegram, but they'd
  *     still need YOUR bot token — tokens never live in the worker.
- *   - Optional shared `RELAY_SECRET` adds a second layer: unauthenticated
- *     requests are rejected with 401. Strongly recommended.
+ *   - SEC-010: the shared `RELAY_SECRET` gate is FAIL-CLOSED. If the worker is
+ *     deployed WITHOUT RELAY_SECRET set, every relay request is rejected with
+ *     503 (no open relay). When set, callers must send a matching
+ *     `x-relay-secret` header or they get 401.
+ *   - DEPLOY REQUIREMENT: set RELAY_SECRET on the worker (`wrangler secret put
+ *     RELAY_SECRET`) AND set a matching TELEGRAM_RELAY_SECRET on the API,
+ *     otherwise Telegram notifications stop working.
  *
  * The worker is transparent: it forwards method, path, query, body and
  * returns the upstream response verbatim so the existing TelegramService
@@ -40,12 +45,27 @@ export default {
       });
     }
 
-    // Optional shared-secret gate.
-    if (env.RELAY_SECRET) {
-      const provided = request.headers.get('x-relay-secret');
-      if (provided !== env.RELAY_SECRET) {
-        return new Response('Unauthorized', { status: 401 });
-      }
+    // SEC-010: fail-closed shared-secret gate. Without RELAY_SECRET configured
+    // on the worker this would be an open relay to Telegram, so refuse to
+    // forward anything until it is set.
+    if (!env.RELAY_SECRET) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: 'relay_misconfigured',
+          message:
+            'RELAY_SECRET is not configured on this worker; relay is disabled.',
+        }),
+        {
+          status: 503,
+          headers: { 'content-type': 'application/json' },
+        },
+      );
+    }
+
+    const provided = request.headers.get('x-relay-secret');
+    if (provided !== env.RELAY_SECRET) {
+      return new Response('Unauthorized', { status: 401 });
     }
 
     const incoming = new URL(request.url);

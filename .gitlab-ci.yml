@@ -11,7 +11,35 @@
 # Образы: <CI_REGISTRY_IMAGE>/{api,web,admin}:<SHA> + :latest
 
 stages:
+  - audit
   - build
+
+# SEC-006: dependency-vulnerability gate. Runs `pnpm audit` restricted to the
+# production dependency tree and fails on prod-level HIGH (and above).
+#
+# allow_failure is TEMPORARILY true: there are still prod-HIGH advisories for
+# `next` that only patch in 15.x (a Next 14 -> 15 major is tracked as a
+# separate task, intentionally NOT bundled with this hardening pass right
+# before a prod deploy). The job therefore reports the findings without
+# blocking the release.
+#
+# TODO(SEC-006): after the Next 15 upgrade lands and `pnpm audit --prod
+# --audit-level high` is clean, flip allow_failure to false so regressions
+# (new prod-HIGH deps) hard-fail the pipeline.
+audit:deps:
+  stage: audit
+  image: node:22-alpine
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@10.26.1 --activate
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm audit --prod --audit-level high
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 .kaniko-build:
   stage: build

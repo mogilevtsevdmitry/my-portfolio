@@ -1,5 +1,8 @@
 FROM node:20-alpine AS base
-RUN npm install -g pnpm
+# Pin pnpm to package.json#packageManager for reproducible builds — an
+# unpinned `npm i -g pnpm` would pull the latest major and resolve transitive
+# deps differently than the committed lockfile.
+RUN npm install -g pnpm@10.26.1
 
 FROM base AS deps
 WORKDIR /app
@@ -30,8 +33,13 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
+# SEC-008: run as a non-root user. Next standalone server only reads its bundle
+# at runtime; it listens on 3000 (non-privileged), so no port change is needed.
+# Copy with non-root ownership so the server can read every asset.
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=builder --chown=app:app /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=app:app /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=app:app /app/apps/web/public ./apps/web/public
+USER app
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]

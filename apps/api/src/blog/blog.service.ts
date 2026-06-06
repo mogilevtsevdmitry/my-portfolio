@@ -144,9 +144,15 @@ export class BlogService {
     if (!secret) return;
 
     try {
+      // SEC-007: pass the secret in a header (not the query string) so it
+      // never leaks into access logs / proxy logs. Contract with the web app:
+      // it reads `x-revalidate-secret`.
       await fetch(
-        `${webUrl}/api/revalidate?secret=${secret}&path=${encodeURIComponent(path)}`,
-        { method: 'POST' },
+        `${webUrl}/api/revalidate?path=${encodeURIComponent(path)}`,
+        {
+          method: 'POST',
+          headers: { 'x-revalidate-secret': secret },
+        },
       );
     } catch {
       console.warn(`Failed to trigger revalidation for ${path}`);

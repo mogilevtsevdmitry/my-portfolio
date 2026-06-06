@@ -3,6 +3,8 @@ import { ContactsService } from './contacts.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramService } from './notifications/telegram.service';
 import { EmailService } from './notifications/email.service';
+import { CaptchaService } from './captcha.service';
+import { CreateContactDto } from './dto/create-contact.dto';
 
 describe('ContactsService', () => {
   let service: ContactsService;
@@ -34,6 +36,10 @@ describe('ContactsService', () => {
             sendContactNotification: jest.fn().mockResolvedValue(undefined),
           },
         },
+        {
+          provide: CaptchaService,
+          useValue: { verify: jest.fn().mockReturnValue(true) },
+        },
       ],
     }).compile();
 
@@ -45,10 +51,12 @@ describe('ContactsService', () => {
 
   describe('create', () => {
     it('should save contact and fire notifications', async () => {
-      const dto = {
+      const dto: CreateContactDto = {
         name: 'Ivan',
         contact: 'ivan@example.com',
         description: 'I need help with my AI project',
+        captchaToken: 'token',
+        captchaAnswer: 42,
       };
 
       prisma.contact.create.mockResolvedValue({

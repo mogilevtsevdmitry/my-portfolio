@@ -3,6 +3,23 @@ import { ConfigService } from '@nestjs/config';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
+import {
+  AllowedUploadMime,
+  MAX_UPLOAD_BYTES,
+} from './dto/presign.dto';
+
+/**
+ * Map an allowlisted MIME type to a safe file extension. Driving the extension
+ * from the (validated) contentType — not the user-supplied fileName — prevents
+ * a client from smuggling an arbitrary/dangerous extension onto the object.
+ */
+const MIME_TO_EXT: Record<AllowedUploadMime, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/avif': 'avif',
+  'image/gif': 'gif',
+};
 
 @Injectable()
 export class UploadService {
@@ -32,21 +49,37 @@ export class UploadService {
   }
 
   async getPresignedUrl(
-    fileName: string,
-    contentType: string,
-  ): Promise<{ uploadUrl: string; fileUrl: string }> {
-    const ext = fileName.split('.').pop();
+    _fileName: string,
+    contentType: AllowedUploadMime,
+  ): Promise<{ uploadUrl: string; fileUrl: string; maxBytes: number }> {
+    // SEC-002: extension comes from the validated MIME, never from fileName.
+    const ext = MIME_TO_EXT[contentType];
+    // UUID key removes any traversal/overwrite risk regardless of fileName.
     const key = `projects/${randomUUID()}.${ext}`;
+
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
+      // ContentType is pinned to the server-validated allowlist value, so the
+      // object cannot be served as text/html or SVG even if the client lies on
+      // the actual PUT (S3 binds ContentType into the signed request).
       ContentType: contentType,
+      // ACL kept public-read on purpose: project/blog preview images are served
+      // publicly by the site. Safety here comes from the strict image-only MIME
+      // allowlist + server-pinned ContentType, NOT from object privacy. Do not
+      // remove — it would break production image rendering.
       ACL: 'public-read',
     });
+
     const uploadUrl = await getSignedUrl(this.s3, command, { expiresIn: 300 });
     const fileUrl = this.endpoint
       ? `${this.endpoint}/${this.bucket}/${key}`
       : `https://${this.bucket}.s3.${this.config.get('AWS_REGION', 'us-east-1')}.amazonaws.com/${key}`;
-    return { uploadUrl, fileUrl };
+
+    // maxBytes is the size contract the admin client must enforce before PUT.
+    // A presigned PUT URL cannot itself cap size (see PresignDto docs); if hard
+    // enforcement becomes necessary, migrate to createPresignedPost with a
+    // content-length-range condition.
+    return { uploadUrl, fileUrl, maxBytes: MAX_UPLOAD_BYTES };
   }
 }

@@ -18,5 +18,17 @@
   "packageManager": "pnpm@10.26.1",
   "engines": {
     "node": ">=20.0.0"
+  },
+  "//pnpm-overrides": "SEC-006: pnpm.overrides force-patches transitive deps flagged HIGH by `pnpm audit`. Re-check on every dependency bump; drop an entry once the parent ships the fix natively.",
+  "pnpm": {
+    "overrides": {
+      "multer@<2.1.1": ">=2.1.1",
+      "fast-xml-builder@<1.1.7": ">=1.1.7",
+      "fast-uri@<3.1.2": ">=3.1.2",
+      "lodash@>=4.0.0 <4.18.0": ">=4.18.0",
+      "glob@>=10.2.0 <10.5.0": ">=10.5.0",
+      "picomatch@>=4.0.0 <4.0.4": ">=4.0.4",
+      "tmp@<0.2.6": ">=0.2.6"
+    }
   }
 }

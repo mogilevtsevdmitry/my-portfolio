@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
+import { isWithinPayloadBounds } from './dto/payload-bounds';
 
 const VALID_EVENTS = new Set([
   'hero_cta_click',
@@ -23,16 +25,44 @@ export class AnalyticsService {
       return;
     }
 
+    // SEC-012: defense-in-depth size guard. The DTO validator already enforces
+    // these bounds, but the controller fires this method fire-and-forget, so we
+    // re-check here to make sure an oversized payload never reaches the DB.
+    const payload = this.sanitizePayload(dto.payload);
+
     try {
       await this.prisma.analyticsEvent.create({
         data: {
           event: dto.event,
-          payload: dto.payload ?? undefined,
+          // Already validated as a bounded, JSON-serializable plain object by
+          // sanitizePayload; cast to Prisma's JSON input type at the boundary.
+          payload:
+            (payload as Prisma.InputJsonValue | undefined) ?? undefined,
           sessionId: dto.sessionId,
         },
       });
     } catch (err) {
       this.logger.error('Failed to record analytics event', err);
     }
+  }
+
+  /**
+   * Drop an over-budget payload rather than persisting it. Returns undefined
+   * when the payload is absent or exceeds the SEC-012 bounds. Shares the exact
+   * same bounds check as the DTO validator via {@link isWithinPayloadBounds}.
+   */
+  private sanitizePayload(
+    payload: Record<string, unknown> | undefined,
+  ): Record<string, unknown> | undefined {
+    if (!payload) return undefined;
+
+    if (!isWithinPayloadBounds(payload)) {
+      this.logger.warn(
+        'Analytics payload exceeded SEC-012 bounds, dropping payload',
+      );
+      return undefined;
+    }
+
+    return payload;
   }
 }

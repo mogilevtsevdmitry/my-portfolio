@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { ContactStatus } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramService } from './notifications/telegram.service';
 import { EmailService } from './notifications/email.service';
@@ -67,10 +68,13 @@ export class ContactsService {
     return this.prisma.contact.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
-  updateStatus(id: string, status: string) {
+  // SEC-018: status is constrained by UpdateContactStatusDto's @IsIn allowlist
+  // (NEW | READ | ARCHIVED), so we can safely accept the typed Prisma enum
+  // instead of casting through `any`.
+  updateStatus(id: string, status: ContactStatus) {
     return this.prisma.contact.update({
       where: { id },
-      data: { status: status as any },
+      data: { status },
     });
   }
 }

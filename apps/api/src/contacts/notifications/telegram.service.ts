@@ -60,6 +60,7 @@ export class TelegramService implements OnModuleInit {
       return;
     }
 
+    // Never put the bot token in a log line: it lives only in the request URL.
     const url = `${this.apiBase}/bot${token}/sendMessage`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -82,8 +83,16 @@ export class TelegramService implements OnModuleInit {
       } as RequestInit);
 
       if (!res.ok) {
+        // A non-2xx status is the fail-closed relay (401/503) or Telegram
+        // itself rejecting the call. The caller swallows the promise, so this
+        // is the only place the failure is recorded — keep it loud (warn) and
+        // include the transport so a relay outage is distinguishable from a
+        // bad token. Never log the URL (it carries the token).
         const body = await res.text().catch(() => '<unreadable>');
-        this.logger.error(`Telegram API ${res.status}: ${body.slice(0, 300)}`);
+        this.logger.warn(
+          `Telegram notification not delivered (${this.transportLabel()}): ` +
+            `status=${res.status} body=${body.slice(0, 300)}`,
+        );
       }
     } catch (err) {
       // undici's fetch wraps the real error in `cause`. Surface it so we can tell
@@ -91,14 +100,18 @@ export class TelegramService implements OnModuleInit {
       const cause: any = (err as any)?.cause;
       const code = cause?.code ?? (err as any)?.code;
       const msg = cause?.message ?? (err as Error)?.message;
-      const transport = this.apiBase !== 'https://api.telegram.org'
-        ? `via relay ${this.apiBase}`
-        : this.dispatcher
-          ? 'via proxy'
-          : 'direct';
       this.logger.error(
-        `Telegram fetch failed (${transport}): code=${code ?? 'unknown'} msg=${msg ?? '(no msg)'}`,
+        `Telegram fetch failed (${this.transportLabel()}): ` +
+          `code=${code ?? 'unknown'} msg=${msg ?? '(no msg)'}`,
       );
     }
+  }
+
+  /** Human-readable label for the active transport, for log context. */
+  private transportLabel(): string {
+    if (this.apiBase !== 'https://api.telegram.org') {
+      return `via relay ${this.apiBase}`;
+    }
+    return this.dispatcher ? 'via proxy' : 'direct';
   }
 }

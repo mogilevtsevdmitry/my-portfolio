@@ -1,5 +1,8 @@
 FROM node:20-alpine AS base
-RUN npm install -g pnpm
+# Pin pnpm to package.json#packageManager for reproducible builds — an
+# unpinned `npm i -g pnpm` would pull the latest major and resolve transitive
+# deps differently than the committed lockfile.
+RUN npm install -g pnpm@10.26.1
 
 FROM base AS deps
 WORKDIR /app
