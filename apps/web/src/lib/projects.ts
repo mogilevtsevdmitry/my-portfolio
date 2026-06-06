@@ -27,7 +27,11 @@ export interface WebProject {
 export async function fetchAllProjects(): Promise<WebProject[]> {
   try {
     const res = await fetch(`${API_URL}/projects`, {
-      next: { tags: ['projects'] },
+      // Time-based ISR (60s) in addition to the on-demand `projects` tag, so the
+      // listing reliably reflects DB changes (incl. migrations/seed that don't
+      // go through the API's revalidation hook) even on the localized
+      // `/[locale]/projects` route. On-demand tag invalidation still applies.
+      next: { revalidate: 60, tags: ['projects'] },
     });
     if (!res.ok) return [];
     return res.json();
@@ -39,7 +43,7 @@ export async function fetchAllProjects(): Promise<WebProject[]> {
 export async function fetchProjectBySlug(slug: string): Promise<WebProject | null> {
   try {
     const res = await fetch(`${API_URL}/projects/${slug}`, {
-      next: { tags: [`project-${slug}`] },
+      next: { revalidate: 60, tags: [`project-${slug}`] },
     });
     if (!res.ok) return null;
     return res.json();
