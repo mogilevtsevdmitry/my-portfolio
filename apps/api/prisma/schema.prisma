@@ -94,6 +94,14 @@ model ProjectTranslation {
   title            String
   shortDescription String  @default("")
   description      String  @default("")
+  // Structured case narrative — mapped 1:1 to the `sections.*` labels rendered
+  // on the project detail page. Empty string => section is hidden.
+  problem          String  @default("")
+  solution         String  @default("")
+  result           String  @default("")
+  // Optional quantified highlights, e.g. [{ "value": "135k+", "label": "records" }].
+  // Display-only; null/empty => no metrics block.
+  metrics          Json?
   projectId        String
   project          Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 

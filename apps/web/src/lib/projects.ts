@@ -1,11 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+export interface WebProjectMetric {
+  value: string;
+  label: string;
+}
+
 export interface WebProjectTranslation {
   id: string;
   locale: string;
   title: string;
   shortDescription: string;
   description: string;
+  problem: string;
+  solution: string;
+  result: string;
+  metrics: WebProjectMetric[] | null;
 }
 
 export interface WebProject {

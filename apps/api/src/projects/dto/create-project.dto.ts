@@ -9,6 +9,14 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+class ProjectMetricDto {
+  @IsString()
+  value: string;
+
+  @IsString()
+  label: string;
+}
+
 class ProjectTranslationDto {
   @IsIn(['ru', 'en'])
   locale: string;
@@ -21,6 +29,24 @@ class ProjectTranslationDto {
 
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsString()
+  problem?: string;
+
+  @IsOptional()
+  @IsString()
+  solution?: string;
+
+  @IsOptional()
+  @IsString()
+  result?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProjectMetricDto)
+  metrics?: ProjectMetricDto[];
 }
 
 export class CreateProjectDto {

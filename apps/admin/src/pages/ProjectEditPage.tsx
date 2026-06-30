@@ -10,11 +10,20 @@ import { MediaUpload } from '@/components/ui/MediaUpload';
 type Locale = 'ru' | 'en';
 type ProjectStatus = 'DRAFT' | 'PUBLISHED';
 
+interface Metric {
+  value: string;
+  label: string;
+}
+
 interface Translation {
   locale: Locale;
   title: string;
   shortDescription: string;
   description: string;
+  problem: string;
+  solution: string;
+  result: string;
+  metrics: Metric[];
 }
 
 interface ProjectData {
@@ -36,6 +45,10 @@ const emptyTranslation = (locale: Locale): Translation => ({
   title: '',
   shortDescription: '',
   description: '',
+  problem: '',
+  solution: '',
+  result: '',
+  metrics: [],
 });
 
 const emptyProject = (): ProjectData => ({
@@ -92,6 +105,10 @@ export function ProjectEditPage() {
             title: found?.title ?? '',
             shortDescription: found?.shortDescription ?? '',
             description: found?.description ?? '',
+            problem: found?.problem ?? '',
+            solution: found?.solution ?? '',
+            result: found?.result ?? '',
+            metrics: Array.isArray(found?.metrics) ? found.metrics : [],
           };
         }),
       });
@@ -121,6 +138,11 @@ export function ProjectEditPage() {
           title: t.title,
           shortDescription: t.shortDescription,
           description: t.description,
+          problem: t.problem,
+          solution: t.solution,
+          result: t.result,
+          // Drop blank rows so we never persist half-filled metrics.
+          metrics: t.metrics.filter((m) => m.value.trim() && m.label.trim()),
         })),
       };
       if (isNew) {
@@ -142,6 +164,33 @@ export function ProjectEditPage() {
         t.locale === locale ? { ...t, [field]: value } : t,
       ),
     }));
+  };
+
+  const setMetrics = (locale: Locale, metrics: Metric[]) => {
+    setProject((prev) => ({
+      ...prev,
+      translations: prev.translations.map((t) =>
+        t.locale === locale ? { ...t, metrics } : t,
+      ),
+    }));
+  };
+
+  const addMetric = (locale: Locale) => {
+    const current = project.translations.find((t) => t.locale === locale)?.metrics ?? [];
+    setMetrics(locale, [...current, { value: '', label: '' }]);
+  };
+
+  const updateMetric = (locale: Locale, index: number, field: keyof Metric, value: string) => {
+    const current = project.translations.find((t) => t.locale === locale)?.metrics ?? [];
+    setMetrics(
+      locale,
+      current.map((m, i) => (i === index ? { ...m, [field]: value } : m)),
+    );
+  };
+
+  const removeMetric = (locale: Locale, index: number) => {
+    const current = project.translations.find((t) => t.locale === locale)?.metrics ?? [];
+    setMetrics(locale, current.filter((_, i) => i !== index));
   };
 
   const activeT =
@@ -325,6 +374,60 @@ export function ProjectEditPage() {
                 rows={6}
                 className="input-base resize-y"
               />
+            </div>
+
+            {(['problem', 'solution', 'result'] as const).map((field) => (
+              <div key={field} className="flex flex-col gap-1.5">
+                <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+                  {field}
+                </label>
+                <textarea
+                  value={activeT[field]}
+                  onChange={(e) => updateTranslation(activeLocale, field, e.target.value)}
+                  rows={3}
+                  className="input-base resize-y"
+                />
+              </div>
+            ))}
+
+            {/* Metric highlights */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+                Metrics (value + label)
+              </label>
+              {activeT.metrics.map((m, i) => (
+                <div key={i} className="flex gap-2 items-center">
+                  <input
+                    value={m.value}
+                    onChange={(e) => updateMetric(activeLocale, i, 'value', e.target.value)}
+                    placeholder={activeLocale === 'ru' ? '135k+' : '135k+'}
+                    className="input-base w-32"
+                  />
+                  <input
+                    value={m.label}
+                    onChange={(e) => updateMetric(activeLocale, i, 'label', e.target.value)}
+                    placeholder={activeLocale === 'ru' ? 'записей родства' : 'kinship records'}
+                    className="input-base flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    type="button"
+                    onClick={() => removeMetric(activeLocale, i)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={() => addMetric(activeLocale)}
+                className="self-start"
+              >
+                + Add metric
+              </Button>
             </div>
           </div>
         </div>

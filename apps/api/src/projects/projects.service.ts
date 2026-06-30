@@ -1,9 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ProjectStatus } from '../generated/prisma/client';
+import { Prisma, ProjectStatus } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+
+// Translation DTOs type `metrics` as a class array, but Prisma's Json input
+// expects a plain `InputJsonValue`. Narrow it here so the structured fields
+// flow through create/update without leaking the class type into the ORM call.
+type TranslationInput = CreateProjectDto['translations'][number];
+
+function normalizeTranslation<T extends TranslationInput>(t: T) {
+  const { metrics, ...rest } = t;
+  return {
+    ...rest,
+    ...(metrics === undefined
+      ? {}
+      : { metrics: metrics as unknown as Prisma.InputJsonValue }),
+  };
+}
 
 @Injectable()
 export class ProjectsService {
@@ -52,7 +67,7 @@ export class ProjectsService {
         ...data,
         status: data.status as ProjectStatus | undefined,
         translations: {
-          create: translations,
+          create: translations.map(normalizeTranslation),
         },
       },
       include: { translations: true },
@@ -68,13 +83,14 @@ export class ProjectsService {
 
     if (translations && translations.length > 0) {
       await Promise.all(
-        translations.map((t) =>
-          this.prisma.projectTranslation.upsert({
+        translations.map((t) => {
+          const normalized = normalizeTranslation(t);
+          return this.prisma.projectTranslation.upsert({
             where: { projectId_locale: { projectId: id, locale: t.locale } },
-            create: { ...t, projectId: id },
-            update: t,
-          }),
-        ),
+            create: { ...normalized, projectId: id },
+            update: normalized,
+          });
+        }),
       );
     }
 

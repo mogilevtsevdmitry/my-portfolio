@@ -172,7 +172,6 @@ export function Hero() {
               {[
                 { end: 5,  suffix: '+', label: t('stats.experience') },
                 { end: 20, suffix: '+', label: t('stats.projects') },
-                { end: 60, suffix: '%', label: t('stats.savings') },
               ].map(({ end, suffix, label }) => (
                 <div key={label}>
                   <CountUp

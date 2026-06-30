@@ -16,7 +16,6 @@
   "stats": [
     { "num": "5+",  "label": "years in development" },
     { "num": "20+", "label": "launched projects" },
-    { "num": "10+", "label": "AI agents in production" },
-    { "num": "60%", "label": "operating cost savings" }
+    { "num": "10+", "label": "AI agents in production" }
   ]
 }

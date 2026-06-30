@@ -79,6 +79,20 @@ export default async function ProjectPage({ params: { locale, slug } }: Props) {
       </GlowText>
       <p className="text-[var(--text-muted)] text-lg mb-8">{content?.shortDescription}</p>
 
+      {/* Metric highlights */}
+      {content?.metrics && content.metrics.length > 0 && (
+        <div className="flex flex-wrap gap-4 mb-10">
+          {content.metrics.map((m) => (
+            <div key={`${m.value}-${m.label}`} className="glass-card px-5 py-4 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-accent">{m.value}</div>
+              <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1">
+                {m.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Technologies */}
       {project.technologies.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-10">
@@ -98,6 +112,20 @@ export default async function ProjectPage({ params: { locale, slug } }: Props) {
             {content.description}
           </p>
         </div>
+      )}
+
+      {/* Case narrative: problem → solution → result */}
+      {(['problem', 'solution', 'result'] as const).map((key) =>
+        content?.[key] ? (
+          <div key={key} className="glass-card p-6 mb-8">
+            <h2 className="text-sm font-semibold text-accent uppercase tracking-wider mb-3">
+              {t(`sections.${key}`)}
+            </h2>
+            <p className="text-[var(--text-muted)] leading-relaxed whitespace-pre-line">
+              {content[key]}
+            </p>
+          </div>
+        ) : null,
       )}
 
       {/* Links */}
